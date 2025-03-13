@@ -1,11 +1,10 @@
 ---
-title: "Clean DETECT tool pilot study data imported from REDCap"
+title: "Clean DETECT tool data accessed using REDCap API"
 ---
 
 # Overview
 
-In this file, we do some initial cleaning of the DETECT tool pilot study data imported from REDCap to prepare it for dashboard summary. This pilot lasted for 2 weeks, starting on 11/11/2024 and ending on 11/25/2024.
-
+In this file, we do some initial cleaning of the DETECT tool study data accessed from REDCap using API to prepare it for dashboard summary. 
 
 # Load packages
 
@@ -18,6 +17,10 @@ library(janitor)
 library(here)
 library(readxl)
 library(lubridate)
+library(redcapAPI)
+library(keyring)
+library(httr)
+library(jsonlite)
 ```
 
 
@@ -32,46 +35,62 @@ source(here::here("R", "data_cleaning_tools.R"))
 
 # Load data
 
-```{r, message=FALSE}
-# Raw data with numerically coded values
-tool_pilot_raw <- read_csv(here::here("data", "detect_tool_pilot", 
-                                      "detect_tool_pilot_test_raw.csv"))
+An API token unique to each user and project can be requested on REDCap. To request a token, you can follow the instructions on the repository Wiki <https://github.com/brad-cannell/r33_dashboards/wiki/DETECT%E2%80%90RPC-Data#redcap> This API token can be saved on your system using the keyring `key_set` function as follows:
+keyring::key_set("detect_tool_redcap_api"). A password box will pop-up and your unique token can be entered into the text box. Once this is done once, it doesn't need to be repeated unless a new token is requested on REDCap. The code below can then be run.
 
-# Data labels
-tool_pilot_labels <- read_csv(
-  here::here("data", "detect_tool_pilot",
-             "detect_tool_pilot_test_labels_raw.csv"))
+```{r}
+# Define REDCap API URL and API token
+api_token <-  keyring::key_get("detect_tool_redcap_api") # Get saved REDCap API token
+redcap_url <- "https://redcap.uth.tmc.edu/api/"
 
-# Link data
-definitions_link_hits <- readxl::read_xlsx(
-  here::here("data", "detect_tool_pilot", "link_data", 
-             "hits_for_elder_abuse_definitions.xlsx"), 
-  col_names = c("date", "elder_abuse_definitions"), skip = 1,
-  )
+# Establish connection to the REDCap project
+rcon <- redcapConnection(url = redcap_url, token = api_token)
 
-al_link_hits <- readxl::read_xlsx(
-  here::here("data", "detect_tool_pilot", "link_data", 
-             "hits_for_detect_al.xlsx"), skip = 1,
-  col_names = c("date", "detect_al")
-  )
+# Export records with coded values
+tool_raw  <- exportRecordsTyped(rcon, form = "reporting_instrument",
+                                rawOrLabel = "raw", factor = FALSE)
+```
 
-ca_link_hits <- readxl::read_xlsx(
-  here::here("data", "detect_tool_pilot", "link_data", 
-             "hits_for_detect_ca.xlsx"), skip = 1,
-  col_names = c("date", "detect_ca")
-  )
+An API token can be requested on GO UTHealth. To request a token, you can follow the instructions on the repository Wiki <https://github.com/brad-cannell/r33_dashboards/wiki/DETECT%E2%80%90RPC-Data#go-ut-health> This API token along with the client application name can be saved on your system using the keyring `key_set` function with the service argument = "detect_tool_go_uth_api". The code below can then be run.
 
-md_link_hits <- readxl::read_xlsx(
-  here::here("data", "detect_tool_pilot", "link_data", 
-             "hits_for_detect_md.xlsx"), skip = 1,
-  col_names = c("date", "detect_md")
-  )
+```{r}
+go_uth_app_name <- keyring::key_list("detect_tool_go_uth_api")[1,2]
+go_uth_api_token <-  keyring::key_get("detect_tool_go_uth_api", go_uth_app_name) # Get saved API token
 
-tx_link_hits <- readxl::read_xlsx(
-  here::here("data", "detect_tool_pilot", "link_data", 
-             "hits_for_detect_tx.xlsx"), skip = 1, 
-  col_names = c("date", "detect_tx")
-  )
+## Function to get link data
+go_uth_link_api <- function(slug){
+
+  go_uth_url <- paste0("https://apps.uth.edu/go/api/urls/", slug, "/traffic")
+  
+  start_date <- "03/12/2025" # Date of first launch of DETECT-RPC TOOL
+  end_date <- format(Sys.Date(), format = "%m/%d/%Y") # today's date
+  
+  details <- POST(go_uth_url, 
+                  add_headers(
+                    `Authorization` = paste("Bearer", go_uth_api_token),
+                    `Content-type` = "application/json",
+                    `appName` = go_uth_app_name,
+                    `startDate` = start_date,
+                    `endDate` = end_date
+                  ))
+  
+  # Extract and parse the JSON response
+  raw_content <- content(details, "text", encoding = "UTF-8")
+  parsed_json <- fromJSON(raw_content, flatten = TRUE)
+  
+  # Create column name based on slug
+  new_col_name <- snakecase::to_snake_case(slug)
+  # Extract the traffic data frame from parsed_json list
+  parsed_json$traffic %>% rename_with(~new_col_name, "hit") 
+}
+```
+
+```{r}
+definitions_link_hits <- go_uth_link_api("elder_abuse_definitions")
+al_link_hits <- go_uth_link_api("detect-al")
+ca_link_hits <- go_uth_link_api("detect-ca")
+md_link_hits <- go_uth_link_api("detect-md")
+tx_link_hits <- go_uth_link_api("detect-tx")
 ```
 
 
@@ -81,9 +100,8 @@ Here we will convert all variable names to snake case with double underscores
 reduced to single underscores so that everything is uniform.
 
 ```{r}
-tool_pilot_raw <- clean_names(tool_pilot_raw) %>% 
-  rename(ri_refer_svcs = r_refer_svcs,
-         ri_clinician_id = ri_clinician_id_2)
+tool_raw <- clean_names(tool_raw) %>% 
+  rename(ri_clinician_id = ri_clinician_id_2)
 ```
 
 
@@ -123,24 +141,18 @@ labels <- c("Record ID", "Survey Identifier", "Survey Timestamp",
            "Have helpful details", "Brief note", "Complete"
 )
 
+# Add missing variable labels for REDCap variables lost with API
+attributes(tool_raw$redcap_survey_identifier)$label <- "Survey Identifier"
+attributes(tool_raw$reporting_instrument_timestamp)$label <- "Survey Timestamp"
+attributes(tool_raw$reporting_instrument_complete)$label <-" Complete?"
+
 # Combine the variable names, descriptions and labels into a dataframe
-var_desc <- data.frame(variable = names(tool_pilot_raw),
-                       description = names(tool_pilot_labels),
-                       label = labels) %>%
+vars_labels <- sapply(tool_raw,
+       function(x){attr(x,"label")})
+
+var_desc <- data.frame(variable = names(vars_labels), description = unname(vars_labels), 
+                       label = labels, row.names = NULL) %>%
   mutate(id = row_number())
-var_desc
-```
-
-
-# Replace labels with variable names in the label data frame
-
-```{r}
-# Create a named vector with variable names and variable descriptions 
-naming_vec <- setNames(as.list(var_desc$description),
-                               var_desc$variable)
-
-# Rename the variables using the vector
-tool_pilot <- tool_pilot_labels %>% rename(unlist(naming_vec))
 ```
 
 
@@ -151,7 +163,7 @@ tool_pilot <- tool_pilot_labels %>% rename(unlist(naming_vec))
 The `reporting_instrument_timestamp` variable contains information on both the submission time and the completion status of each survey response. The variable `reporting_instrument_complete` also provides completion status information. A new variable will be created that only contains the sumbmission time and the reporting_instrument_timestamp variable will be removed.
 
 ```{r}
-tool_pilot <- tool_pilot %>% 
+tool <- tool_raw %>% 
   mutate(
     timestamp_end = case_when(
       is.na(reporting_instrument_timestamp) ~ NA,
@@ -177,7 +189,7 @@ clinician_names <- c("ri_clinician_bcm", "ri_clinician_bcm_oth",
                      "ri_clinician_lbj", "ri_clinician_lbj_oth", 
                      "ri_clinician_utp", "ri_clinician_utp_oth")
 
-tool_pilot <- tool_pilot %>% 
+tool <- tool %>% 
   mutate(
     ri_clinician_id_name = coalesce(ri_clinician_utp_oth, ri_clinician_utp, 
                                      ri_clinician_lbj_oth, ri_clinician_lbj, 
@@ -192,11 +204,25 @@ tool_pilot <- tool_pilot %>%
 
 ## Numeric and factor variables
 
+### Convert all factor variables to character variables
+
+Before the appropriate factor variables with the appropriate levels can be set, the ones automatically created need to be removed.
+
+```{r}
+tool <- tool %>%
+  mutate(
+    across(
+      .cols = where(is.factor),
+      .fns = ~ as.character(.x)
+    )
+  )
+```
+
 ### Institution
 
 ```{r}
 cols <- c("ri_institution", "ri_institution_2")
-get_values(tool_pilot, cols)
+get_values(tool, cols)
 ```
 
 ```{r}
@@ -231,7 +257,7 @@ cols_suffix <- paste(cols, suffix, sep = "_")
 # - Create a factor version of each column (w/o "Don't know" and "Refused")
 # - Arrange the columns as: original column, numeric column w/o "Don't know" and 
 #   "Refused", and the factor version of the column.
-tool_pilot <- tool_pilot |>
+tool <- tool |>
   # Convert character values to numeric values
   chars_to_nums(cols, value_labels) |> 
   # Create a version of each column with "Don't know" and "Refused" converted to NA
@@ -248,7 +274,7 @@ tool_pilot <- tool_pilot |>
 ```
 
 ```{r}
-tool_pilot <- tool_pilot %>%
+tool <- tool %>%
   rename(calc_institution_7cat = calc_institution) %>%
   mutate(
     calc_institution_7cat_f = factor(
@@ -265,7 +291,7 @@ cols <- c("ri_necessities", "ri_environment", "ri_caregiver", "ri_sedated",
           "ri_isolated", "ri_anxious", "ri_prohibited", "ri_unmet_needs", 
           "ri_injuries")
 
-get_values(tool_pilot, cols)
+get_values(tool, cols)
 ```
 
 ```{r}
@@ -296,7 +322,7 @@ cols_suffix <- paste(cols, suffix, sep = "_")
 # - Create a factor version of each column (w/o "Don't know" and "Refused")
 # - Arrange the columns as: original column, numeric column w/o "Don't know" and 
 #   "Refused", and the factor version of the column.
-tool_pilot <- tool_pilot |>
+tool <- tool |>
   # Convert character values to numeric values
   chars_to_nums(cols, value_labels) |> 
   # Create a version of each column with "Don't know" and "Refused" converted to NA
@@ -317,7 +343,7 @@ tool_pilot <- tool_pilot |>
 ```{r}
 cols <- c("ri_caregiver_un_reason")
 
-get_values(tool_pilot, cols)
+get_values(tool, cols)
 ```
 
 ```{r}
@@ -347,7 +373,7 @@ cols_suffix <- paste(cols, suffix, sep = "_")
 # - Create a factor version of each column (w/o "Don't know" and "Refused")
 # - Arrange the columns as: original column, numeric column w/o "Don't know" and 
 #   "Refused", and the factor version of the column.
-tool_pilot <- tool_pilot |>
+tool <- tool |>
   # Convert character values to numeric values
   chars_to_nums(cols, value_labels) |> 
   # Create a version of each column with "Don't know" and "Refused" converted to NA
@@ -368,7 +394,7 @@ tool_pilot <- tool_pilot |>
 ```{r}
 cols <- c("suspect_em", "ri_report", "ri_refer_svcs", "ri_reflection")
 
-get_values(tool_pilot, cols)
+get_values(tool, cols)
 ```
 
 ```{r}
@@ -398,7 +424,7 @@ cols_suffix <- paste(cols, suffix, sep = "_")
 # - Create a factor version of each column (w/o "Don't know" and "Refused")
 # - Arrange the columns as: original column, numeric column w/o "Don't know" and 
 #   "Refused", and the factor version of the column.
-tool_pilot <- tool_pilot |>
+tool <- tool |>
   # Convert character values to numeric values
   chars_to_nums(cols, value_labels) |> 
   # Create a version of each column with "Don't know" and "Refused" converted to NA
@@ -420,7 +446,7 @@ tool_pilot <- tool_pilot |>
 cols <- paste0("ri_em_type_", c(1:7, 98, 99))
 
 ### Change factor labels from "checked" and "unchecked" to "Yes" and "No"
-tool_pilot <- tool_pilot %>% 
+tool <- tool %>% 
   mutate(
     across(
       .cols = all_of(cols),
@@ -434,7 +460,7 @@ tool_pilot <- tool_pilot %>%
 
 
 ```{r}
-get_values(tool_pilot, cols)
+get_values(tool, cols)
 ```
 
 ```{r}
@@ -464,7 +490,7 @@ cols_suffix <- paste(cols, suffix, sep = "_")
 # - Create a factor version of each column (w/o "Don't know" and "Refused")
 # - Arrange the columns as: original column, numeric column w/o "Don't know" and 
 #   "Refused", and the factor version of the column.
-tool_pilot <- tool_pilot |>
+tool <- tool |>
   # Convert character values to numeric values
   chars_to_nums(cols, value_labels) |> 
   # Create a version of each column with "Don't know" and "Refused" converted to NA
@@ -484,28 +510,16 @@ tool_pilot <- tool_pilot |>
 # Remove variables without important research data
 
 ```{r}
-tool_pilot <- tool_pilot %>% 
+tool <- tool %>% 
   select(-c(redcap_survey_identifier, password_entry, password_incorrect_1, 
             ri_clinician_name))
-```
-
-
-# Filter only data for dates relevant to the pilot
-
-```{r}
-# Create sequence of relevant dates
-dates <- c(seq(as.Date('2024-11-11'), as.Date('2024-11-25'), by = "day"))
-
-# Filter the ri_date variable to include only dates in
-# sequence
-tool_pilot <- tool_pilot %>% filter(as.Date(ri_date) %in% dates)
 ```
 
 
 # Update variable descriptions dataframe with new variables
 
 ```{r}
-tool_pilot_vars <- names(tool_pilot) %>% 
+tool_vars <- names(tool) %>% 
   # Subset new variables
   setdiff(., var_desc$variable) %>%
   list() %>%
@@ -518,7 +532,7 @@ tool_pilot_vars <- names(tool_pilot) %>%
   # remove "no_suffix" variable
   select(-c(no_suffix))
 
-var_desc <- bind_rows(var_desc, tool_pilot_vars) %>% 
+var_desc <- bind_rows(var_desc, tool_vars) %>% 
   add_row(variable = "timestamp_end", description = "Form end timestamp",
           label = "Form start timestamp", id = 62) %>% arrange(id) %>% 
   add_row(variable = "ri_clinician_id_name", description = "Clinician name",
@@ -531,7 +545,7 @@ var_desc <- bind_rows(var_desc, tool_pilot_vars) %>%
 # Merge link data and convert to long format
 
 ```{r}
-# Merge all the link data into one dataframe
+# Merge all the link data into one data frame
 link_hits <- list(definitions_link_hits, al_link_hits, ca_link_hits, 
                   md_link_hits, tx_link_hits) %>% purrr::reduce(left_join, 
                                                                 by = "date") %>%
@@ -547,12 +561,22 @@ link_hits <- list(definitions_link_hits, al_link_hits, ca_link_hits,
 # Save data
 
 ```{r}
-write_rds(tool_pilot, here::here("data", "detect_tool_pilot",
-                                 "detect_tool_pilot_cleaned.RDS"))
+# Create new detect_tool data folder
+folder_path <- here::here("data", "detect_tool")
+if(!dir.exists(folder_path)) {dir.create(folder_path)}
 
-write_rds(var_desc, here::here("data_management", "detect_tool_pilot", 
+# Save cleaned data
+write_rds(tool, here::here("data", "detect_tool",
+                                 "detect_tool_cleaned.RDS"))
+```
+
+```{r}
+# Save variable descriptions
+write_rds(var_desc, here::here("data_management", "detect_tool", 
                                "variable_descriptions.RDS"))
+```
 
-write_rds(link_hits, here::here("data", "detect_tool_pilot",
-                               "detect_tool_pilot_link_hits_long_format.RDS"))
+```{r}
+write_rds(link_hits, here::here("data", "detect_tool",
+                               "detect_tool_link_hits.RDS"))
 ```
