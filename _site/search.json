@@ -4,7 +4,7 @@
     "href": "data_management/mock_data/03_recruiter_scheduling_data_calc.html",
     "title": "Load Packages",
     "section": "",
-    "text": "library(dplyr)\n\nWarning: package 'dplyr' was built under R version 4.3.3\n\n\n\nAttaching package: 'dplyr'\n\n\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n\n\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union\n\nlibrary(here)\n\nWarning: package 'here' was built under R version 4.3.3\n\n\nhere() starts at C:/Users/ebiek/OneDrive - UTHealth Houston/Cannell lab/r33_dashboards\n\nlibrary(ids)\n\nWarning: package 'ids' was built under R version 4.3.3\n\nlibrary(lubridate, include.only = c(\"year\", \"month\", \"day\", \"hour\"))\n\nWarning: package 'lubridate' was built under R version 4.3.2\n\n\n\n# Load function for converting POSIXct dates to a Month YYYY format.\nsource(here::here(\"r\", \"month_name_year.R\"))"
+    "text": "library(dplyr)\n\n\nAttaching package: 'dplyr'\n\n\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n\n\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union\n\nlibrary(here)\n\nhere() starts at H:/DETECT/r33_dashboards\n\nlibrary(ids)\nlibrary(lubridate, include.only = c(\"year\", \"month\", \"day\", \"hour\"))\n\n\n# Load function for converting POSIXct dates to a Month YYYY format.\nsource(here::here(\"r\", \"month_name_year.R\"))"
   },
   {
     "objectID": "data_management/mock_data/03_recruiter_scheduling_data_calc.html#split-the-date-time-variable",
@@ -39,7 +39,7 @@
     "href": "data_management/mock_data/01_mock_data_creation.html",
     "title": "Clinician Screening Tracker Data",
     "section": "",
-    "text": "Total patients seen by clinicians: 8003 Total eligible appointments: 9121\nTotal screened appointments: 5210 Total screened patients that will be contacted for recruitment: 4863 Total recruited patients that will be interviewed: 180\nThe details for the variables created using this file are contained here: https://uthtmc.sharepoint.com/:w:/r/sites/SPHDETECT-RPC/Shared%20Documents/DETECT-RPC%20R61%20R33%202022/0_data_folders/02_dashboards/00_documentation/03_r33_dashboards_implementation_planning_notes.docx.docx?d=we1c72482657342aea35ede2de4e980a0&csf=1&web=1&e=nUY12K\nlibrary(dplyr)\n\nWarning: package 'dplyr' was built under R version 4.3.3\n\n\n\nAttaching package: 'dplyr'\n\n\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n\n\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union\n\nlibrary(here)\n\nWarning: package 'here' was built under R version 4.3.3\n\n\nhere() starts at C:/Users/ebiek/OneDrive - UTHealth Houston/Cannell lab/r33_dashboards\n\nlibrary(tidyr, include.only = c(\"separate_wider_delim\", \"crossing\"))\n\nWarning: package 'tidyr' was built under R version 4.3.2\n\nlibrary(ids)\n\nWarning: package 'ids' was built under R version 4.3.3\n\nlibrary(randomNames)\n\nWarning: package 'randomNames' was built under R version 4.3.3\n\nlibrary(generator, include.only = \"r_phone_numbers\")\n\nWarning: package 'generator' was built under R version 4.3.3"
+    "text": "Total patients seen by clinicians: 8003 Total eligible appointments: 9121\nTotal screened appointments: 5210 Total screened patients that will be contacted for recruitment: 4863 Total recruited patients that will be interviewed: 180\nThe details for the variables created using this file are contained here: https://uthtmc.sharepoint.com/:w:/r/sites/SPHDETECT-RPC/Shared%20Documents/DETECT-RPC%20R61%20R33%202022/0_data_folders/02_dashboards/00_documentation/03_r33_dashboards_implementation_planning_notes.docx.docx?d=we1c72482657342aea35ede2de4e980a0&csf=1&web=1&e=nUY12K\nlibrary(dplyr)\n\n\nAttaching package: 'dplyr'\n\n\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n\n\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union\n\nlibrary(here)\n\nhere() starts at H:/DETECT/r33_dashboards\n\nlibrary(tidyr, include.only = c(\"separate_wider_delim\", \"crossing\"))\nlibrary(ids)\nlibrary(randomNames)\nlibrary(generator, include.only = \"r_phone_numbers\")"
   },
   {
     "objectID": "data_management/mock_data/01_mock_data_creation.html#unique-mrns-and-dyad-ids",
@@ -186,21 +186,21 @@
     "href": "data_management/detect_tool/data_02_detect_tool.html#create-fuction-to-generate-missingness-variables",
     "title": "Create variables for visualizing the DETECT tool pilot study data",
     "section": "Create fuction to generate missingness variables",
-    "text": "Create fuction to generate missingness variables\nThis function will also take branching/ skip logic into consideration.\n\ndt_miss &lt;- function(df, var, condition = NULL){\n  if(is.null(condition)){\n    new_df &lt;- df %&gt;% \n      mutate(\n        \"{var}_miss\" := case_when(\n          is.na(.data[[var]]) ~ 1,\n          TRUE ~ 0\n        )\n      )\n  }else if(!is.null(condition)){\n    new_df &lt;- df %&gt;%\n      mutate(\n         \"{var}_miss\" := case_when(\n           eval(parse(text = condition)) & is.na(.data[[var]]) ~ 1,\n           !(eval(parse(text = condition))) & is.na(.data[[var]]) ~ NA,\n           eval(parse(text = condition)) & !is.na(.data[[var]]) ~ 0\n        )       \n      )\n  }\n  \n  new_df %&gt;% relocate(paste0(var, \"_miss\"), .after = var)\n}"
+    "text": "Create fuction to generate missingness variables\nThis function will also take branching/ skip logic into consideration.\n\ndt_miss &lt;- function(df, var, condition = NULL) {\n    if (is.null(condition)) {\n        new_df &lt;- df %&gt;%\n            mutate(\n                \"{var}_miss\" := case_when(\n                    is.na(.data[[var]]) ~ 1,\n                    TRUE ~ 0\n                )\n            )\n    } else if (!is.null(condition)) {\n        new_df &lt;- df %&gt;%\n            mutate(\n                \"{var}_miss\" := case_when(\n                    eval(parse(text = condition)) & is.na(.data[[var]]) ~ 1,\n                    !(eval(parse(text = condition))) & is.na(.data[[var]]) ~ NA,\n                    eval(parse(text = condition)) & !is.na(.data[[var]]) ~ 0\n                )\n            )\n    }\n\n    new_df %&gt;% relocate(paste0(var, \"_miss\"), .after = var)\n}"
   },
   {
     "objectID": "data_management/detect_tool/data_02_detect_tool.html#variables-with-no-conditional-arguments-skip-logic",
     "href": "data_management/detect_tool/data_02_detect_tool.html#variables-with-no-conditional-arguments-skip-logic",
     "title": "Create variables for visualizing the DETECT tool pilot study data",
     "section": "Variables with no conditional arguments/ skip logic",
-    "text": "Variables with no conditional arguments/ skip logic\n\nvars &lt;- c(\"ri_patient_mrn\", \"calc_institution_7cat_f\", \"ri_clinician_id_name\", \n          \"ri_necessities_3cat_f\", \"ri_environment_3cat_f\", \n          \"ri_caregiver_3cat_f\", \"ri_sedated_3cat_f\", \"ri_isolated_3cat_f\", \n          \"ri_anxious_3cat_f\", \"ri_prohibited_3cat_f\", \"ri_unmet_needs_3cat_f\", \n          \"ri_injuries_3cat_f\", \"suspect_em_2cat_f\", \"ri_reflection_2cat_f\"\n          )\ncondition &lt;- NULL\n\n\nfor(var in vars){\n  missing_data &lt;- dt_miss(df = missing_data, var = var, \n                     condition = condition)  \n}\n\nWarning: Using an external vector in selections was deprecated in tidyselect 1.1.0.\nℹ Please use `all_of()` or `any_of()` instead.\n  # Was:\n  data %&gt;% select(var)\n\n  # Now:\n  data %&gt;% select(all_of(var))\n\nSee &lt;https://tidyselect.r-lib.org/reference/faq-external-vector.html&gt;."
+    "text": "Variables with no conditional arguments/ skip logic\n\nvars &lt;- c(\n    \"ri_patient_mrn\",\n    \"calc_institution_7cat_f\",\n    \"ri_clinician_id_name\",\n    \"ri_necessities_3cat_f\",\n    \"ri_environment_3cat_f\",\n    \"ri_caregiver_3cat_f\",\n    \"ri_sedated_3cat_f\",\n    \"ri_isolated_3cat_f\",\n    \"ri_anxious_3cat_f\",\n    \"ri_prohibited_3cat_f\",\n    \"ri_unmet_needs_3cat_f\",\n    \"ri_injuries_3cat_f\",\n    \"suspect_em_2cat_f\",\n    \"ri_reflection_2cat_f\"\n)\ncondition &lt;- NULL\n\n\nfor (var in vars) {\n    missing_data &lt;- dt_miss(df = missing_data, var = var, condition = condition)\n}\n\nWarning: Using an external vector in selections was deprecated in tidyselect 1.1.0.\nℹ Please use `all_of()` or `any_of()` instead.\n  # Was:\n  data %&gt;% select(var)\n\n  # Now:\n  data %&gt;% select(all_of(var))\n\nSee &lt;https://tidyselect.r-lib.org/reference/faq-external-vector.html&gt;."
   },
   {
     "objectID": "data_management/detect_tool/data_02_detect_tool.html#variables-with-conditional-arguments-skip-logic",
     "href": "data_management/detect_tool/data_02_detect_tool.html#variables-with-conditional-arguments-skip-logic",
     "title": "Create variables for visualizing the DETECT tool pilot study data",
     "section": "Variables with conditional arguments/ skip logic",
-    "text": "Variables with conditional arguments/ skip logic\n\nri_environment_un_reason\n\nvar &lt;- \"ri_environment_un_reason\"\n\ncondition_vars &lt;- c(\"ri_necessities_3cat_f\", \"ri_environment_3cat_f\")\n\ncondition &lt;- \"if_any(.cols = all_of(condition_vars), .fns = ~.x == 'Unable to assess')\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, \n                   condition = condition)\n\n\n\nri_caregiver_un_reason\n\nvar &lt;- \"ri_caregiver_un_reason_2cat_f\"\ncondition &lt;- \"ri_caregiver_3cat_f == 'Unable to assess'\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, \n                   condition = condition) \n\n\n\nri_caregiver_oth\n\nvar &lt;- \"ri_caregiver_oth\"\ncondition &lt;- \"ri_caregiver_un_reason_2cat_f == 'Other reason'\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, \n                   condition = condition)\n\n\n\nri_patient_assess\n\nvar &lt;- \"ri_patient_assess\"\n\ncondition_vars &lt;- c(\"ri_sedated_3cat_f\", \"ri_isolated_3cat_f\",\n                    \"ri_anxious_3cat_f\", \"ri_prohibited_3cat_f\", \n                    \"ri_unmet_needs_3cat_f\", \"ri_injuries_3cat_f\")\n\ncondition &lt;- \"if_any(.cols = all_of(condition_vars), .fns = ~.x == 'Unable to assess')\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, \n                   condition = condition)\n\n\n\nri_em_no_reason\n\nvar &lt;- \"ri_em_no_reason\"\n\ncondition_vars &lt;- c(\"ri_necessities_3cat_f\", \"ri_environment_3cat_f\",\n                    \"ri_caregiver_3cat_f\", \"ri_sedated_3cat_f\", \n                    \"ri_isolated_3cat_f\", \"ri_anxious_3cat_f\", \n                    \"ri_prohibited_3cat_f\", \"ri_unmet_needs_3cat_f\", \n                    \"ri_injuries_3cat_f\")\n\ncondition &lt;- \"suspect_em_2cat_f == 'No' & if_any(.cols = all_of(condition_vars), \n.fns = ~.x == 'Yes')\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, \n                   condition = condition)\n\n\n\nri_em_reason\n\nvar &lt;- \"ri_em_reason\"\n\ncondition_vars &lt;- c(\"ri_necessities_3cat_f\", \"ri_environment_3cat_f\",\n                    \"ri_caregiver_3cat_f\", \"ri_sedated_3cat_f\", \n                    \"ri_isolated_3cat_f\", \"ri_anxious_3cat_f\", \n                    \"ri_prohibited_3cat_f\", \"ri_unmet_needs_3cat_f\", \n                    \"ri_injuries_3cat_f\")\n\ncondition &lt;- \"suspect_em_2cat_f == 'Yes' & if_all(.cols = all_of(condition_vars), \n.fns = ~.x != 'Yes')\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, \n                   condition = condition)\n\n\n\nEM Type vars\n\nem_type_vars &lt;- c(\"ri_em_type_1_2cat_f\", \"ri_em_type_2_2cat_f\", \"ri_em_type_3_2cat_f\", \n          \"ri_em_type_4_2cat_f\", \"ri_em_type_5_2cat_f\", \"ri_em_type_6_2cat_f\", \n          \"ri_em_type_7_2cat_f\", \"ri_em_type_98_2cat_f\", \"ri_em_type_99_2cat_f\")\n\n\nmissing_data &lt;- missing_data %&gt;%\n  mutate(\n    ri_em_type_miss = case_when(\n      suspect_em_2cat_f == 'Yes' & \n        if_all(.cols = all_of(em_type_vars), \n               .fns = ~.x == \"No\") ~ 1,\n      suspect_em_2cat_f != 'Yes' & \n        if_all(.cols = all_of(em_type_vars), \n               .fns = ~.x == \"No\") ~ NA,\n      suspect_em_2cat_f == 'Yes' & \n        if_any(.cols = all_of(em_type_vars), \n               .fns = ~.x == \"Yes\") ~ 0      \n      )\n  )\n\n\n\nri_em_type_other\n\nvar &lt;- \"ri_em_type_other\"\ncondition &lt;- \"ri_em_type_98_2cat_f == 'Checked'\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, \n                   condition = condition)\n\n\n\nri_report_2cat_f\n\nvar &lt;- \"ri_report_2cat_f\"\ncondition &lt;- \"suspect_em_2cat_f == 'Yes'\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, \n                   condition = condition)\n\n\n\nri_aps_no_reason\n\nvar &lt;- \"ri_aps_no_reason\"\ncondition &lt;- \"ri_report_2cat_f == 'No'\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, \n                   condition = condition)\n\n\n\nri_refer_svcs_2cat_f\n\nvar &lt;- \"ri_refer_svcs_2cat_f\"\ncondition &lt;- \"suspect_em_2cat_f == 'Yes'\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, \n                   condition = condition)\n\n\n\nri_refer_svcs_specify\n\nvar &lt;- \"ri_refer_svcs_specify\"\ncondition &lt;- \"ri_refer_svcs_2cat_f == 'Yes'\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, \n                   condition = condition) \n\n\n\nri_reflection_notes\n\nvar &lt;- \"ri_reflection_notes\"\ncondition &lt;- \"ri_reflection_2cat_f == 'Yes'\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, \n                   condition = condition)"
+    "text": "Variables with conditional arguments/ skip logic\n\nri_environment_un_reason\n\nvar &lt;- \"ri_environment_un_reason\"\n\ncondition_vars &lt;- c(\"ri_necessities_3cat_f\", \"ri_environment_3cat_f\")\n\ncondition &lt;- \"if_any(.cols = all_of(condition_vars), .fns = ~.x == 'Unable to assess')\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, condition = condition)\n\n\n\nri_caregiver_un_reason\n\nvar &lt;- \"ri_caregiver_un_reason_2cat_f\"\ncondition &lt;- \"ri_caregiver_3cat_f == 'Unable to assess'\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, condition = condition)\n\n\n\nri_caregiver_oth\n\nvar &lt;- \"ri_caregiver_oth\"\ncondition &lt;- \"ri_caregiver_un_reason_2cat_f == 'Other reason'\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, condition = condition)\n\n\n\nri_patient_assess\n\nvar &lt;- \"ri_patient_assess\"\n\ncondition_vars &lt;- c(\n    \"ri_sedated_3cat_f\",\n    \"ri_isolated_3cat_f\",\n    \"ri_anxious_3cat_f\",\n    \"ri_prohibited_3cat_f\",\n    \"ri_unmet_needs_3cat_f\",\n    \"ri_injuries_3cat_f\"\n)\n\ncondition &lt;- \"if_any(.cols = all_of(condition_vars), .fns = ~.x == 'Unable to assess')\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, condition = condition)\n\n\n\nri_em_no_reason\n\nvar &lt;- \"ri_em_no_reason\"\n\ncondition_vars &lt;- c(\n    \"ri_necessities_3cat_f\",\n    \"ri_environment_3cat_f\",\n    \"ri_caregiver_3cat_f\",\n    \"ri_sedated_3cat_f\",\n    \"ri_isolated_3cat_f\",\n    \"ri_anxious_3cat_f\",\n    \"ri_prohibited_3cat_f\",\n    \"ri_unmet_needs_3cat_f\",\n    \"ri_injuries_3cat_f\"\n)\n\ncondition &lt;- \"suspect_em_2cat_f == 'No' & if_any(.cols = all_of(condition_vars), \n.fns = ~.x == 'Yes')\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, condition = condition)\n\n\n\nri_em_reason\n\nvar &lt;- \"ri_em_reason\"\n\ncondition_vars &lt;- c(\n    \"ri_necessities_3cat_f\",\n    \"ri_environment_3cat_f\",\n    \"ri_caregiver_3cat_f\",\n    \"ri_sedated_3cat_f\",\n    \"ri_isolated_3cat_f\",\n    \"ri_anxious_3cat_f\",\n    \"ri_prohibited_3cat_f\",\n    \"ri_unmet_needs_3cat_f\",\n    \"ri_injuries_3cat_f\"\n)\n\ncondition &lt;- \"suspect_em_2cat_f == 'Yes' & if_all(.cols = all_of(condition_vars), \n.fns = ~.x != 'Yes')\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, condition = condition)\n\n\n\nEM Type vars\n\nem_type_vars &lt;- c(\n    \"ri_em_type_1_2cat_f\",\n    \"ri_em_type_2_2cat_f\",\n    \"ri_em_type_3_2cat_f\",\n    \"ri_em_type_4_2cat_f\",\n    \"ri_em_type_5_2cat_f\",\n    \"ri_em_type_6_2cat_f\",\n    \"ri_em_type_7_2cat_f\",\n    \"ri_em_type_98_2cat_f\",\n    \"ri_em_type_99_2cat_f\"\n)\n\n\nmissing_data &lt;- missing_data %&gt;%\n    mutate(\n        ri_em_type_miss = case_when(\n            suspect_em_2cat_f == 'Yes' &\n                if_all(.cols = all_of(em_type_vars), .fns = ~ .x == \"No\") ~\n                1,\n            suspect_em_2cat_f != 'Yes' &\n                if_all(.cols = all_of(em_type_vars), .fns = ~ .x == \"No\") ~\n                NA,\n            suspect_em_2cat_f == 'Yes' &\n                if_any(.cols = all_of(em_type_vars), .fns = ~ .x == \"Yes\") ~\n                0\n        )\n    )\n\n\n\nri_em_type_other\n\nvar &lt;- \"ri_em_type_other\"\ncondition &lt;- \"ri_em_type_98_2cat_f == 'Checked'\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, condition = condition)\n\n\n\nri_report_2cat_f\n\nvar &lt;- \"ri_report_2cat_f\"\ncondition &lt;- \"suspect_em_2cat_f == 'Yes'\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, condition = condition)\n\n\n\nri_aps_no_reason\n\nvar &lt;- \"ri_aps_no_reason\"\ncondition &lt;- \"ri_report_2cat_f == 'No'\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, condition = condition)\n\n\n\nri_refer_svcs_2cat_f\n\nvar &lt;- \"ri_refer_svcs_2cat_f\"\ncondition &lt;- \"suspect_em_2cat_f == 'Yes'\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, condition = condition)\n\n\n\nri_refer_svcs_specify\n\nvar &lt;- \"ri_refer_svcs_specify\"\ncondition &lt;- \"ri_refer_svcs_2cat_f == 'Yes'\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, condition = condition)\n\n\n\nri_reflection_notes\n\nvar &lt;- \"ri_reflection_notes\"\ncondition &lt;- \"ri_reflection_2cat_f == 'Yes'\"\n\n\nmissing_data &lt;- dt_miss(df = missing_data, var = var, condition = condition)"
   },
   {
     "objectID": "data_management/detect_tool/data_02_detect_tool.html#all",
@@ -214,77 +214,77 @@
     "href": "data_management/detect_tool/data_02_detect_tool.html#baylor",
     "title": "Create variables for visualizing the DETECT tool pilot study data",
     "section": "Baylor",
-    "text": "Baylor\n\nbaylor_missing_plot_data &lt;-  missing_data %&gt;% \n  filter(calc_institution_7cat_f == \"Baylor College of Medicine - BT House Calls\") %&gt;%\n  create_missing_plot_data()"
+    "text": "Baylor\n\nbaylor_missing_plot_data &lt;- missing_data %&gt;%\n    filter(\n        calc_institution_7cat_f == \"Baylor College of Medicine - BT House Calls\"\n    ) %&gt;%\n    create_missing_plot_data()"
   },
   {
     "objectID": "data_management/detect_tool/data_02_detect_tool.html#johns-hopkins",
     "href": "data_management/detect_tool/data_02_detect_tool.html#johns-hopkins",
     "title": "Create variables for visualizing the DETECT tool pilot study data",
     "section": "Johns Hopkins",
-    "text": "Johns Hopkins\n\njh_missing_plot_data &lt;-  missing_data %&gt;% \n  filter(calc_institution_7cat_f == \"Johns Hopkins - JHOME\") %&gt;%\n  create_missing_plot_data()"
+    "text": "Johns Hopkins\n\njh_missing_plot_data &lt;- missing_data %&gt;%\n    filter(calc_institution_7cat_f == \"Johns Hopkins - JHOME\") %&gt;%\n    create_missing_plot_data()"
   },
   {
     "objectID": "data_management/detect_tool/data_02_detect_tool.html#ucsf",
     "href": "data_management/detect_tool/data_02_detect_tool.html#ucsf",
     "title": "Create variables for visualizing the DETECT tool pilot study data",
     "section": "UCSF",
-    "text": "UCSF\n\nucsf_missing_plot_data &lt;-  missing_data %&gt;% \n  filter(calc_institution_7cat_f == \"UCSF - Care at Home Program\") %&gt;%\n  create_missing_plot_data()"
+    "text": "UCSF\n\nucsf_missing_plot_data &lt;- missing_data %&gt;%\n    filter(calc_institution_7cat_f == \"UCSF - Care at Home Program\") %&gt;%\n    create_missing_plot_data()"
   },
   {
     "objectID": "data_management/detect_tool/data_02_detect_tool.html#uab",
     "href": "data_management/detect_tool/data_02_detect_tool.html#uab",
     "title": "Create variables for visualizing the DETECT tool pilot study data",
     "section": "UAB",
-    "text": "UAB\n\nuab_missing_plot_data &lt;-  missing_data %&gt;% \n  filter(calc_institution_7cat_f == \"University of Alabama - UAB House Calls\") %&gt;%\n  create_missing_plot_data()"
+    "text": "UAB\n\nuab_missing_plot_data &lt;- missing_data %&gt;%\n    filter(\n        calc_institution_7cat_f == \"University of Alabama - UAB House Calls\"\n    ) %&gt;%\n    create_missing_plot_data()"
   },
   {
     "objectID": "data_management/detect_tool/data_02_detect_tool.html#utsw",
     "href": "data_management/detect_tool/data_02_detect_tool.html#utsw",
     "title": "Create variables for visualizing the DETECT tool pilot study data",
     "section": "UTSW",
-    "text": "UTSW\n\nutsw_missing_plot_data &lt;-  missing_data %&gt;% \n  filter(calc_institution_7cat_f == \"UT Southwestern - COVE\") %&gt;%\n  create_missing_plot_data()"
+    "text": "UTSW\n\nutsw_missing_plot_data &lt;- missing_data %&gt;%\n    filter(calc_institution_7cat_f == \"UT Southwestern - COVE\") %&gt;%\n    create_missing_plot_data()"
   },
   {
     "objectID": "data_management/detect_tool/data_02_detect_tool.html#lbj",
     "href": "data_management/detect_tool/data_02_detect_tool.html#lbj",
     "title": "Create variables for visualizing the DETECT tool pilot study data",
     "section": "LBJ",
-    "text": "LBJ\n\nlbj_missing_plot_data &lt;-  missing_data %&gt;% \n  filter(calc_institution_7cat_f == \"UTH Houston - LBJ House Calls\") %&gt;%\n  create_missing_plot_data()"
+    "text": "LBJ\n\nlbj_missing_plot_data &lt;- missing_data %&gt;%\n    filter(calc_institution_7cat_f == \"UTH Houston - LBJ House Calls\") %&gt;%\n    create_missing_plot_data()"
   },
   {
     "objectID": "data_management/detect_tool/data_02_detect_tool.html#utp",
     "href": "data_management/detect_tool/data_02_detect_tool.html#utp",
     "title": "Create variables for visualizing the DETECT tool pilot study data",
     "section": "UTP",
-    "text": "UTP\n\nutp_missing_plot_data &lt;-  missing_data %&gt;% \n  filter(calc_institution_7cat_f == \"UTH Houston - UT Physicians House Calls\") %&gt;%\n  create_missing_plot_data()"
+    "text": "UTP\n\nutp_missing_plot_data &lt;- missing_data %&gt;%\n    filter(\n        calc_institution_7cat_f == \"UTH Houston - UT Physicians House Calls\"\n    ) %&gt;%\n    create_missing_plot_data()"
   },
   {
     "objectID": "data_management/detect_tool/data_02_detect_tool.html#indicators-of-abuse",
     "href": "data_management/detect_tool/data_02_detect_tool.html#indicators-of-abuse",
     "title": "Create variables for visualizing the DETECT tool pilot study data",
     "section": "Indicators of abuse",
-    "text": "Indicators of abuse\n\nind_em_labs &lt;- c(\n  \"Absence of necessities\", \"Environment health or safety concern\", \"Defensive\", \n  \"Chemically sedated\", \"Isolated\", \"Anxious\", \"Prohibited\", \"Unmet needs\",\n  \"Unexplained injuries\" \n  )\n\n\nind_em_plot_data &lt;- univar_plot_data(ind_em_vars, \n                                        level_list = c(\"Yes\", \"No\", \n                                                       \"Unable to assess\"),\n                                     labels_list = ind_em_labs)\n\n\n# Overall data not grouped by institution\nind_em_plot_data_all &lt;- ind_em_plot_data %&gt;% select(-c(calc_institution_7cat_f, inst_count,\n                                            inst_perc, inst_total)) %&gt;% \n  distinct()"
+    "text": "Indicators of abuse\n\nind_em_labs &lt;- c(\n    \"Absence of necessities\",\n    \"Environment health or safety concern\",\n    \"Defensive\",\n    \"Chemically sedated\",\n    \"Isolated\",\n    \"Anxious\",\n    \"Prohibited\",\n    \"Unmet needs\",\n    \"Unexplained injuries\"\n)\n\n\nind_em_plot_data &lt;- univar_plot_data(\n    ind_em_vars,\n    level_list = c(\"Yes\", \"No\", \"Unable to assess\"),\n    labels_list = ind_em_labs\n)\n\n\n# Overall data not grouped by institution\nind_em_plot_data_all &lt;- ind_em_plot_data %&gt;%\n    select(-c(calc_institution_7cat_f, inst_count, inst_perc, inst_total)) %&gt;%\n    distinct()"
   },
   {
     "objectID": "data_management/detect_tool/data_02_detect_tool.html#em-type",
     "href": "data_management/detect_tool/data_02_detect_tool.html#em-type",
     "title": "Create variables for visualizing the DETECT tool pilot study data",
     "section": "EM Type",
-    "text": "EM Type\n\nem_type_labs &lt;- c(\n  \"Self-neglect suspected\", \"Financial exploitation suspected\", \n  \"Emotional or psychological abuse suspected\", \"Physical abuse suspected\", \n  \"Sexual abuse suspected\", \"Caregiver neglect suspected\", \n  \"Abandonment suspected\", \"Other mistreatment type suspected\",\n  \"Dont know/ Not sure of mistreatment type\"\n  )\n\n\nem_type_plot_data &lt;- univar_plot_data(em_type_vars, \n                                        level_list = c(\"Yes\", \"No\"),\n                                      labels_list = em_type_labs)\n\n\n# Overall data not grouped by institution\nem_type_plot_data_all &lt;- em_type_plot_data %&gt;% select(-c(calc_institution_7cat_f, inst_count,\n                                            inst_perc, inst_total)) %&gt;% \n  distinct()\n\n\nCounts for APS reports intended and made\n\n# Intended reports\nreports_intended &lt;- dt_data %&gt;% select(ri_patient_mrn, calc_institution_7cat_f, \n                                          ri_report_2cat_f, timestamp_end) %&gt;% \n  # Filter only rows where an intention to report was indicated\n  filter(ri_report_2cat_f == \"Yes\") %&gt;%\n  # Standardize the MRN to remove trailing zeros at the beginning\n  mutate(\n    std_mrn = gsub(\"^0+\", \"\", ri_patient_mrn),\n    # ri_date does not always match the timestamp variable so make a new date \n    # variable based on the ending timestamp\n    end_date = as.Date(timestamp_end)\n  ) %&gt;% relocate(std_mrn, .after = ri_patient_mrn) \n\n# Date range\nstart_date &lt;- min(as.Date(dt_data$ri_timestamp_start))\nend_date &lt;- max(as.Date(dt_data$timestamp_end))\n\n# Reports made\nintended_reports_made &lt;- aps_reports_data %&gt;% \n  select(ar_mrn, ar_encounter_date) %&gt;%\n  filter(between(as.Date(ar_encounter_date), start_date, end_date)) %&gt;% \n  # Standardize the MRN to remove trailing zeros at the beginning\n  mutate(\n    std_mrn = gsub(\"^0+\", \"\", ar_mrn)\n  ) %&gt;% relocate(std_mrn, .after = ar_mrn) %&gt;%\n  right_join(reports_intended, \n             by = c(\"ar_encounter_date\" = \"end_date\", \"std_mrn\"))"
+    "text": "EM Type\n\nem_type_labs &lt;- c(\n    \"Self-neglect suspected\",\n    \"Financial exploitation suspected\",\n    \"Emotional or psychological abuse suspected\",\n    \"Physical abuse suspected\",\n    \"Sexual abuse suspected\",\n    \"Caregiver neglect suspected\",\n    \"Abandonment suspected\",\n    \"Other mistreatment type suspected\",\n    \"Dont know/ Not sure of mistreatment type\"\n)\n\n\nem_type_plot_data &lt;- univar_plot_data(\n    em_type_vars,\n    level_list = c(\"Yes\", \"No\"),\n    labels_list = em_type_labs\n)\n\n\n# Overall data not grouped by institution\nem_type_plot_data_all &lt;- em_type_plot_data %&gt;%\n    select(-c(calc_institution_7cat_f, inst_count, inst_perc, inst_total)) %&gt;%\n    distinct()\n\n\nCounts for APS reports intended and made\n\n# Intended reports\nreports_intended &lt;- dt_data %&gt;%\n    select(\n        ri_patient_mrn,\n        calc_institution_7cat_f,\n        ri_report_2cat_f,\n        timestamp_end\n    ) %&gt;%\n    # Filter only rows where an intention to report was indicated\n    filter(ri_report_2cat_f == \"Yes\") %&gt;%\n    # Standardize the MRN to remove trailing zeros at the beginning\n    mutate(\n        std_mrn = gsub(\"^0+\", \"\", ri_patient_mrn),\n        # ri_date does not always match the timestamp variable so make a new date\n        # variable based on the ending timestamp\n        end_date = as.Date(timestamp_end)\n    ) %&gt;%\n    relocate(std_mrn, .after = ri_patient_mrn)\n\n# Date range\nstart_date &lt;- min(as.Date(dt_data$ri_timestamp_start))\nend_date &lt;- max(as.Date(dt_data$timestamp_end))\n\n# Reports made\nintended_reports_made &lt;- aps_reports_data %&gt;%\n    select(ar_mrn, ar_encounter_date) %&gt;%\n    filter(between(as.Date(ar_encounter_date), start_date, end_date)) %&gt;%\n    # Standardize the MRN to remove trailing zeros at the beginning\n    mutate(\n        std_mrn = gsub(\"^0+\", \"\", ar_mrn)\n    ) %&gt;%\n    relocate(std_mrn, .after = ar_mrn) %&gt;%\n    right_join(\n        reports_intended,\n        by = c(\"ar_encounter_date\" = \"end_date\", \"std_mrn\")\n    )"
   },
   {
     "objectID": "data_management/detect_tool/data_02_detect_tool.html#indicators-of-em-module-and-suspect-em",
     "href": "data_management/detect_tool/data_02_detect_tool.html#indicators-of-em-module-and-suspect-em",
     "title": "Create variables for visualizing the DETECT tool pilot study data",
     "section": "Indicators of EM Module and Suspect EM",
-    "text": "Indicators of EM Module and Suspect EM\n\nind_sus_em_plot_data &lt;- bivar_plot_data(ind_em_vars, \n                                        level_list = c(\"Yes\", \"No\", \n                                                       \"Unable to assess\"),\n                                        labels_list = ind_em_labs\n)\n\n\n# Overall data for plot not grouped by institution\nind_sus_em_plot_data_all &lt;- ind_sus_em_plot_data %&gt;% \n  select(-c(calc_institution_7cat_f, inst_count, inst_perc, inst_perc_label)\n         ) %&gt;% \n  distinct()\n\n\n# Overall data for table not grouped by institution\nind_sus_em_table_data_all &lt;- ind_sus_em_plot_data_all %&gt;%\n  select(-c(perc)) %&gt;%\n  mutate(\n    label = factor(label, levels = ind_em_labs)\n  ) %&gt;% arrange(label) %&gt;%\n  # Add shade column\n  add_shade_column_x_rows(., 4)\n\n\n# Data for tables grouped by institution\nind_sus_em_table_data &lt;- ind_sus_em_plot_data %&gt;%\n  select(-c(count, perc, perc_label, inst_perc)) %&gt;% \n  # Arrange df by levels of indicators em label variable\n  mutate(\n    label = factor(label, levels = ind_em_labs)\n  ) %&gt;% arrange(label)"
+    "text": "Indicators of EM Module and Suspect EM\n\nind_sus_em_plot_data &lt;- bivar_plot_data(\n    ind_em_vars,\n    level_list = c(\"Yes\", \"No\", \"Unable to assess\"),\n    labels_list = ind_em_labs\n)\n\n\n# Overall data for plot not grouped by institution\nind_sus_em_plot_data_all &lt;- ind_sus_em_plot_data %&gt;%\n    select(\n        -c(calc_institution_7cat_f, inst_count, inst_perc, inst_perc_label)\n    ) %&gt;%\n    distinct()\n\n\n# Overall data for table not grouped by institution\nind_sus_em_table_data_all &lt;- ind_sus_em_plot_data_all %&gt;%\n    select(-c(perc)) %&gt;%\n    mutate(\n        label = factor(label, levels = ind_em_labs)\n    ) %&gt;%\n    arrange(label) %&gt;%\n    # Add shade column\n    add_shade_column_x_rows(., 4)\n\n\n# Data for tables grouped by institution\nind_sus_em_table_data &lt;- ind_sus_em_plot_data %&gt;%\n    select(-c(count, perc, perc_label, inst_perc)) %&gt;%\n    # Arrange df by levels of indicators em label variable\n    mutate(\n        label = factor(label, levels = ind_em_labs)\n    ) %&gt;%\n    arrange(label)"
   },
   {
     "objectID": "data_management/detect_tool/data_02_detect_tool.html#suspect-em-and-em-type",
     "href": "data_management/detect_tool/data_02_detect_tool.html#suspect-em-and-em-type",
     "title": "Create variables for visualizing the DETECT tool pilot study data",
     "section": "Suspect EM and EM Type",
-    "text": "Suspect EM and EM Type\n\nem_type_labs &lt;- c( \"Self-neglect suspected\", \"Financial exploitation suspected\", \n                   \"Emotional or psychological abuse suspected\", \n                   \"Physical abuse suspected\",  \"Sexual abuse suspected\", \n                   \"Caregiver neglect suspected\", \"Abandonment suspected\", \n                   \"Other mistreatment type suspected\", \n                   \"Dont know/ Not sure of mistreatment type\")\n\n\nsus_type_em_plot_data &lt;- bivar_plot_data(em_type_vars, level_list = c(\"Yes\", \"No\"),\n                                        labels_list = em_type_labs) %&gt;%\n  filter(suspect_em_2cat_f == \"Yes\")\n\n\n# Overall data for plot not grouped by institution\nsus_type_em_plot_data_all &lt;- sus_type_em_plot_data %&gt;% \n  select(-c(calc_institution_7cat_f, inst_count, inst_perc, inst_perc_label)\n         ) %&gt;% \n  distinct()\n\n\n# Overall data for table not grouped by institution\nsus_type_em_table_data_all &lt;- sus_type_em_plot_data_all %&gt;%\n  select(-c(perc)) %&gt;% \n  mutate(\n    label = factor(label, levels = em_type_labs)\n  ) %&gt;% arrange(label) %&gt;%\n  # Add shade column\n  add_shade_column_x_rows(., 3)\n\n\n# Data for tables grouped by institution\nsus_type_em_table_data &lt;- sus_type_em_plot_data %&gt;%\n  select(-c(count, perc, perc_label, inst_perc)) %&gt;%  \n  # Arrange df by levels of indicators em label variable\n  mutate(\n    label = factor(label, levels = em_type_labs)\n  ) %&gt;% arrange(label)"
+    "text": "Suspect EM and EM Type\n\nem_type_labs &lt;- c(\n    \"Self-neglect suspected\",\n    \"Financial exploitation suspected\",\n    \"Emotional or psychological abuse suspected\",\n    \"Physical abuse suspected\",\n    \"Sexual abuse suspected\",\n    \"Caregiver neglect suspected\",\n    \"Abandonment suspected\",\n    \"Other mistreatment type suspected\",\n    \"Dont know/ Not sure of mistreatment type\"\n)\n\n\nsus_type_em_plot_data &lt;- bivar_plot_data(\n    em_type_vars,\n    level_list = c(\"Yes\", \"No\"),\n    labels_list = em_type_labs\n) %&gt;%\n    filter(suspect_em_2cat_f == \"Yes\")\n\n\n# Overall data for plot not grouped by institution\nsus_type_em_plot_data_all &lt;- sus_type_em_plot_data %&gt;%\n    select(\n        -c(calc_institution_7cat_f, inst_count, inst_perc, inst_perc_label)\n    ) %&gt;%\n    distinct()\n\n\n# Overall data for table not grouped by institution\nsus_type_em_table_data_all &lt;- sus_type_em_plot_data_all %&gt;%\n    select(-c(perc)) %&gt;%\n    mutate(\n        label = factor(label, levels = em_type_labs)\n    ) %&gt;%\n    arrange(label) %&gt;%\n    # Add shade column\n    add_shade_column_x_rows(., 3)\n\n\n# Data for tables grouped by institution\nsus_type_em_table_data &lt;- sus_type_em_plot_data %&gt;%\n    select(-c(count, perc, perc_label, inst_perc)) %&gt;%\n    # Arrange df by levels of indicators em label variable\n    mutate(\n        label = factor(label, levels = em_type_labs)\n    ) %&gt;%\n    arrange(label)"
   },
   {
     "objectID": "data_management/detect_tool_pilot/data_02_detect_tool_pilot_test.html",
@@ -403,7 +403,7 @@
     "href": "data_management/mock_data/02_clinician_tracker_data_analysis.html",
     "title": "Load Packages",
     "section": "",
-    "text": "Load Packages\n\nlibrary(dplyr)\n\nWarning: package 'dplyr' was built under R version 4.3.3\n\n\n\nAttaching package: 'dplyr'\n\n\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n\n\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union\n\nlibrary(here)\n\nWarning: package 'here' was built under R version 4.3.3\n\n\nhere() starts at C:/Users/ebiek/OneDrive - UTHealth Houston/Cannell lab/r33_dashboards\n\nlibrary(ids)\n\nWarning: package 'ids' was built under R version 4.3.3\n\nlibrary(lubridate, include.only = c(\"year\", \"month\", \"day\"))\n\nWarning: package 'lubridate' was built under R version 4.3.2\n\n\n\n# Load function for converting POSIXct dates to a Month YYYY format.\nsource(here::here(\"r\", \"month_name_year.R\"))\n\n\n\nLoad data\n\nraw_data &lt;- readRDS(here::here(\"data\", \"clinician_tracker_mock_data_raw.rds\"))\n\n\n\nAdd calculated values to raw clinician tracker data\n\ndata_com &lt;- raw_data %&gt;%\n  mutate(\n    num_completed = case_when(\n      screened == 1 ~ sample(c(sample(c(0:12), 902, replace = TRUE), rep(12, (13158-902)))),\n      TRUE          ~ NA\n      ),\n    perc_completed = (num_completed/12)*100\n  )\n\n\n# Create date column with Month YYYY format.\nclin_data &lt;- month_year(data_com, visit_date, \"month_year\") %&gt;%\n  # Calculate proportion screened and proportion of screening questions answered \n  # each month for each clinic \n  group_by(month_year, clinic_name) %&gt;%\n  mutate(\n    perc_screened_month_clinic = format(round((sum(screened, na.rm=TRUE)/sum(eligible, na.rm=TRUE))*100, digits = 2),nsmall=2),\n    perc_items_month_clinic = format(round(mean(perc_completed, na.rm=TRUE), digits = 2),nsmall=2)\n  ) %&gt;%\n  ungroup() %&gt;%\n  group_by(month_year, name_full_phys) %&gt;%\n  # Calculate proportion screened and proportion of screening questions answered \n  # each month for each physician\n  mutate(\n    perc_screened_month_phys = format(round((sum(screened, na.rm=TRUE)/sum(eligible, na.rm=TRUE))*100, digits = 2),nsmall=2),\n    perc_items_month_phys = format(round(mean(perc_completed, na.rm=TRUE), digits = 2),nsmall=2)\n    ) %&gt;%\n  ungroup() %&gt;%\n  # Convert NaN to NA\n  mutate(\n    across(\n      .cols = c(starts_with(\"perc_items\"), starts_with(\"perc_screened\")),\n      .fns = ~ case_when(\n        .x == NaN ~ NA,\n        TRUE      ~ .x\n      )\n    )\n  )\n\n\n\nSave data\n\n# Save clinician tracking data\nsaveRDS(clin_data, here::here(\"data\", \"clinician_tracker_mock_data_calc.rds\"))"
+    "text": "Load Packages\n\nlibrary(dplyr)\n\n\nAttaching package: 'dplyr'\n\n\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n\n\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union\n\nlibrary(here)\n\nhere() starts at H:/DETECT/r33_dashboards\n\nlibrary(ids)\nlibrary(lubridate, include.only = c(\"year\", \"month\", \"day\"))\n\n\n# Load function for converting POSIXct dates to a Month YYYY format.\nsource(here::here(\"r\", \"month_name_year.R\"))\n\n\n\nLoad data\n\nraw_data &lt;- readRDS(here::here(\"data\", \"clinician_tracker_mock_data_raw.rds\"))\n\n\n\nAdd calculated values to raw clinician tracker data\n\ndata_com &lt;- raw_data %&gt;%\n  mutate(\n    num_completed = case_when(\n      screened == 1 ~ sample(c(sample(c(0:12), 902, replace = TRUE), rep(12, (13158-902)))),\n      TRUE          ~ NA\n      ),\n    perc_completed = (num_completed/12)*100\n  )\n\n\n# Create date column with Month YYYY format.\nclin_data &lt;- month_year(data_com, visit_date, \"month_year\") %&gt;%\n  # Calculate proportion screened and proportion of screening questions answered \n  # each month for each clinic \n  group_by(month_year, clinic_name) %&gt;%\n  mutate(\n    perc_screened_month_clinic = format(round((sum(screened, na.rm=TRUE)/sum(eligible, na.rm=TRUE))*100, digits = 2),nsmall=2),\n    perc_items_month_clinic = format(round(mean(perc_completed, na.rm=TRUE), digits = 2),nsmall=2)\n  ) %&gt;%\n  ungroup() %&gt;%\n  group_by(month_year, name_full_phys) %&gt;%\n  # Calculate proportion screened and proportion of screening questions answered \n  # each month for each physician\n  mutate(\n    perc_screened_month_phys = format(round((sum(screened, na.rm=TRUE)/sum(eligible, na.rm=TRUE))*100, digits = 2),nsmall=2),\n    perc_items_month_phys = format(round(mean(perc_completed, na.rm=TRUE), digits = 2),nsmall=2)\n    ) %&gt;%\n  ungroup() %&gt;%\n  # Convert NaN to NA\n  mutate(\n    across(\n      .cols = c(starts_with(\"perc_items\"), starts_with(\"perc_screened\")),\n      .fns = ~ case_when(\n        .x == NaN ~ NA,\n        TRUE      ~ .x\n      )\n    )\n  )\n\n\n\nSave data\n\n# Save clinician tracking data\nsaveRDS(clin_data, here::here(\"data\", \"clinician_tracker_mock_data_calc.rds\"))"
   },
   {
     "objectID": "index.html",
@@ -432,5 +432,1076 @@
     "title": "R33 Phase Cluster-Randomized Controlled Trial",
     "section": "",
     "text": "Report on the progress towards recruiting goals.\nReport the fidelity of DETECT-RPC use at each of the study sites\nReport on adverse events and clinical trial stopping criteria."
+  },
+  {
+    "objectID": "sections/screening_tool_dashboard.html",
+    "href": "sections/screening_tool_dashboard.html",
+    "title": "Screening Tool Use Tracker",
+    "section": "",
+    "text": "This dashboard displays statistics for:File Nameclinician_tracker_mock_data_calc.rdsLast Modified2025-03-31 15:33 CDT\n\n\n\n\nThis data references:Subjects8003Clinicians68Appointments13158Time Period2024-07-01 to 2026-07-01\n\n\n\n\nAll"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html",
+    "href": "sections/detect_tool_pilot_dashboard.html",
+    "title": "DETECT Tool Pilot",
+    "section": "",
+    "text": "This dashboard displays statistics for:File Namesdetect_tool_pilot_cleaned.RDSdetect_tool_pilot_link_hits_long_format.RDSaps_reports_cleaned.RDSLast Modified2025-03-31 15:32 CDT\n\n\n\n\nThis data references:Patients24Clinicians6Survey Responses25Time Period2024-11-11 to 2024-11-25"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n\n$icon\n[1] \"ui-checks-grid\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 25\n\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 25\n\n\n\n\n$icon\n[1] \"person\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 24"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-1",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-1",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"clipboard2-x\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"search\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 3\n\n\n\n\n$icon\n[1] \"file-earmark\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 1"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-2",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-2",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"file-earmark-check\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 1\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 2\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row",
+    "href": "sections/detect_tool_pilot_dashboard.html#row",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-1",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-1",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-2",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-2",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-3",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-3",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-4",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-4",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-3",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-3",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n\n$icon\n[1] \"ui-checks-grid\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 6\n\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 6\n\n\n\n\n$icon\n[1] \"person\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 5"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-4",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-4",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"clipboard2-x\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"search\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 1\n\n\n\n\n$icon\n[1] \"file-earmark\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 1"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-5",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-5",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"file-earmark-check\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 1\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 1\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-5",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-5",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-6",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-6",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-7",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-7",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-8",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-8",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-9",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-9",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-6",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-6",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n\n$icon\n[1] \"ui-checks-grid\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"person\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-7",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-7",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"clipboard2-x\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"search\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"file-earmark\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-8",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-8",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"file-earmark-check\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-10",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-10",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-11",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-11",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-12",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-12",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-13",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-13",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-14",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-14",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-9",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-9",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n\n$icon\n[1] \"ui-checks-grid\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"person\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-10",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-10",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"clipboard2-x\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"search\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"file-earmark\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-11",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-11",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"file-earmark-check\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 1\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-15",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-15",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-16",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-16",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-17",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-17",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-18",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-18",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-19",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-19",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-12",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-12",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n\n$icon\n[1] \"ui-checks-grid\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 11\n\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 11\n\n\n\n\n$icon\n[1] \"person\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 11"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-13",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-13",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"clipboard2-x\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"search\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"file-earmark\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-14",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-14",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"file-earmark-check\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-20",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-20",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-21",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-21",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-22",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-22",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-23",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-23",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-24",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-24",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-15",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-15",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n\n$icon\n[1] \"ui-checks-grid\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 4\n\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 4\n\n\n\n\n$icon\n[1] \"person\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 4"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-16",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-16",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"clipboard2-x\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"search\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"file-earmark\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-17",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-17",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"file-earmark-check\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 1\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-25",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-25",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-26",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-26",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-27",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-27",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-28",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-28",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-29",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-29",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-18",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-18",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n\n$icon\n[1] \"ui-checks-grid\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 1\n\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 1\n\n\n\n\n$icon\n[1] \"person\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 1"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-19",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-19",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"clipboard2-x\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"search\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 1\n\n\n\n\n$icon\n[1] \"file-earmark\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-20",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-20",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"file-earmark-check\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 1\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-30",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-30",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-31",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-31",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-32",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-32",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-33",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-33",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-34",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-34",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-21",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-21",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n\n$icon\n[1] \"ui-checks-grid\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 1\n\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 1\n\n\n\n\n$icon\n[1] \"person\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 1"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-22",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-22",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"clipboard2-x\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"search\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 1\n\n\n\n\n$icon\n[1] \"file-earmark\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-23",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-height-5-.fill-23",
+    "title": "DETECT Tool Pilot",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"file-earmark-check\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 1\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-35",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-35",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-36",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-36",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-37",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-37",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-38",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-38",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_pilot_dashboard.html#row-39",
+    "href": "sections/detect_tool_pilot_dashboard.html#row-39",
+    "title": "DETECT Tool Pilot",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/clinician_screening_completion_tracker.html",
+    "href": "sections/clinician_screening_completion_tracker.html",
+    "title": "Clinician Screening Completion Tracker",
+    "section": "",
+    "text": "This dashboard displays statistics for:File Nameclinician_tracker_mock_data_calc.rdsLast Modified2025-03-31 15:31 CDT\n\n\n\n\nThis data references:Subjects8003Clinicians68Appointments13158Time Period2024-07-01 to 2026-07-01"
+  },
+  {
+    "objectID": "sections/clinician_screening_completion_tracker.html#row-height-25-.fill",
+    "href": "sections/clinician_screening_completion_tracker.html#row-height-25-.fill",
+    "title": "Clinician Screening Completion Tracker",
+    "section": "Row {height= “25%” .fill}",
+    "text": "Row {height= “25%” .fill}\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-red\"\n\n$value\n[1] \"48.98%\"\n\n\n\n\n$icon\n[1] \"card-checklist\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] \"99.65%\"\n\n\n\n\n$icon\n[1] \"card-checklist\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] \"96.63%\"\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-red\"\n\n$value\n[1] \"57.12%\""
+  },
+  {
+    "objectID": "sections/clinician_screening_completion_tracker.html#row",
+    "href": "sections/clinician_screening_completion_tracker.html#row",
+    "title": "Clinician Screening Completion Tracker",
+    "section": "Row",
+    "text": "Row\n\nColumn\n\n\n\nRow\n\n\n\nThis WeekEligible Patient Appointments98Screenings48Average Number of Items Answered11.96\n\n\n\n\nRow\n\n\n\nOverallEligible Patient Appointments9121Screenings5210Average Number of Items Answered11.60\n\n\n\n\n\nColumn"
+  },
+  {
+    "objectID": "sections/clinician_screening_completion_tracker.html#row-3",
+    "href": "sections/clinician_screening_completion_tracker.html#row-3",
+    "title": "Clinician Screening Completion Tracker",
+    "section": "Row",
+    "text": "Row\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-red\"\n\n$value\n[1] \"38.46%\"\n\n\n\n\n$icon\n[1] \"card-checklist\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] \"100.00%\"\n\n\n\n\n$icon\n[1] \"card-checklist\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] \"96.94%\"\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-red\"\n\n$value\n[1] \"57.56%\""
+  },
+  {
+    "objectID": "sections/clinician_screening_completion_tracker.html#row-4",
+    "href": "sections/clinician_screening_completion_tracker.html#row-4",
+    "title": "Clinician Screening Completion Tracker",
+    "section": "Row",
+    "text": "Row\n\n\n\nColumn\n\nRow\n\n\n\nThis WeekEligible Patient Appointments13Screenings5Average Number of Items Answered12.00\n\n\n\n\nRow\n\n\n\nOverallEligible Patient Appointments933Screenings537Average Number of Items Answered11.63\n\n\n\n\n\nColumn"
+  },
+  {
+    "objectID": "sections/clinician_screening_completion_tracker.html#row-7",
+    "href": "sections/clinician_screening_completion_tracker.html#row-7",
+    "title": "Clinician Screening Completion Tracker",
+    "section": "Row",
+    "text": "Row\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-red\"\n\n$value\n[1] \"47.62%\"\n\n\n\n\n$icon\n[1] \"card-checklist\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] \"100.00%\"\n\n\n\n\n$icon\n[1] \"card-checklist\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] \"96.74%\"\n\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-red\"\n\n$value\n[1] \"57.49%\""
+  },
+  {
+    "objectID": "sections/clinician_screening_completion_tracker.html#row-8",
+    "href": "sections/clinician_screening_completion_tracker.html#row-8",
+    "title": "Clinician Screening Completion Tracker",
+    "section": "Row",
+    "text": "Row\n\n\n\nColumn\n\nRow\n\n\n\nThis WeekEligible Patient Appointments21Screenings10Average Number of Items Answered12.00\n\n\n\n\nRow\n\n\n\nOverallEligible Patient Appointments1696Screenings975Average Number of Items Answered11.61\n\n\n\n\n\nColumn"
+  },
+  {
+    "objectID": "sections/clinician_screening_completion_tracker.html#row-11",
+    "href": "sections/clinician_screening_completion_tracker.html#row-11",
+    "title": "Clinician Screening Completion Tracker",
+    "section": "Row",
+    "text": "Row\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-yellow\"\n\n$value\n[1] \"61.11%\"\n\n\n\n\n$icon\n[1] \"card-checklist\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] \"98.48%\"\n\n\n\n\n\n$icon\n[1] \"card-checklist\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] \"97.04%\"\n\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-red\"\n\n$value\n[1] \"57.42%\""
+  },
+  {
+    "objectID": "sections/clinician_screening_completion_tracker.html#row-12",
+    "href": "sections/clinician_screening_completion_tracker.html#row-12",
+    "title": "Clinician Screening Completion Tracker",
+    "section": "Row",
+    "text": "Row\n\nColumn\n\nRow\n\n\nThis WeekEligible Patient Appointments18Screenings11Average Number of Items Answered11.82\n\n\n\n\nRow\n\n\nOverallEligible Patient Appointments1738Screenings998Average Number of Items Answered11.65\n\n\n\n\n\nColumn"
+  },
+  {
+    "objectID": "sections/clinician_screening_completion_tracker.html#row-15",
+    "href": "sections/clinician_screening_completion_tracker.html#row-15",
+    "title": "Clinician Screening Completion Tracker",
+    "section": "Row",
+    "text": "Row\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-red\"\n\n$value\n[1] \"42.86%\"\n\n\n\n\n$icon\n[1] \"card-checklist\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] \"100.00%\"\n\n\n\n\n\n$icon\n[1] \"card-checklist\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] \"95.32%\"\n\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-red\"\n\n$value\n[1] \"54.83%\""
+  },
+  {
+    "objectID": "sections/clinician_screening_completion_tracker.html#row-16",
+    "href": "sections/clinician_screening_completion_tracker.html#row-16",
+    "title": "Clinician Screening Completion Tracker",
+    "section": "Row",
+    "text": "Row\n\nColumn\n\nRow\n\n\nThis WeekEligible Patient Appointments7Screenings3Average Number of Items Answered12.00\n\n\n\n\nRow\n\n\nOverallEligible Patient Appointments1087Screenings596Average Number of Items Answered11.44\n\n\n\n\n\nColumn"
+  },
+  {
+    "objectID": "sections/clinician_screening_completion_tracker.html#row-19",
+    "href": "sections/clinician_screening_completion_tracker.html#row-19",
+    "title": "Clinician Screening Completion Tracker",
+    "section": "Row",
+    "text": "Row\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-red\"\n\n$value\n[1] \"43.75%\"\n\n\n\n\n$icon\n[1] \"card-checklist\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] \"100.00%\"\n\n\n\n\n\n$icon\n[1] \"card-checklist\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] \"96.69%\"\n\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-red\"\n\n$value\n[1] \"57.77%\""
+  },
+  {
+    "objectID": "sections/clinician_screening_completion_tracker.html#row-20",
+    "href": "sections/clinician_screening_completion_tracker.html#row-20",
+    "title": "Clinician Screening Completion Tracker",
+    "section": "Row",
+    "text": "Row\n\nColumn\n\nRow\n\n\nThis WeekEligible Patient Appointments16Screenings7Average Number of Items Answered12.00\n\n\n\n\nRow\n\n\nOverallEligible Patient Appointments2105Screenings1216Average Number of Items Answered11.60\n\n\n\n\n\nColumn"
+  },
+  {
+    "objectID": "sections/clinician_screening_completion_tracker.html#row-23",
+    "href": "sections/clinician_screening_completion_tracker.html#row-23",
+    "title": "Clinician Screening Completion Tracker",
+    "section": "Row",
+    "text": "Row\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-yellow\"\n\n$value\n[1] \"77.78%\"\n\n\n\n\n$icon\n[1] \"card-checklist\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] \"100.00%\"\n\n\n\n\n\n$icon\n[1] \"card-checklist\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] \"96.42%\"\n\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-red\"\n\n$value\n[1] \"58.22%\""
+  },
+  {
+    "objectID": "sections/clinician_screening_completion_tracker.html#row-24",
+    "href": "sections/clinician_screening_completion_tracker.html#row-24",
+    "title": "Clinician Screening Completion Tracker",
+    "section": "Row",
+    "text": "Row\n\nColumn\n\nRow\n\n\nThis WeekEligible Patient Appointments9Screenings7Average Number of Items Answered12.00\n\n\n\n\nRow\n\n\nOverallEligible Patient Appointments639Screenings372Average Number of Items Answered11.57\n\n\n\n\n\nColumn"
+  },
+  {
+    "objectID": "sections/clinician_screening_completion_tracker.html#row-27",
+    "href": "sections/clinician_screening_completion_tracker.html#row-27",
+    "title": "Clinician Screening Completion Tracker",
+    "section": "Row",
+    "text": "Row\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-red\"\n\n$value\n[1] \"35.71%\"\n\n\n\n\n$icon\n[1] \"card-checklist\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] \"100.00%\"\n\n\n\n\n\n$icon\n[1] \"card-checklist\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] \"96.83%\"\n\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-red\"\n\n$value\n[1] \"55.90%\""
+  },
+  {
+    "objectID": "sections/clinician_screening_completion_tracker.html#row-28",
+    "href": "sections/clinician_screening_completion_tracker.html#row-28",
+    "title": "Clinician Screening Completion Tracker",
+    "section": "Row",
+    "text": "Row\n\nColumn\n\nRow\n\n\nThis WeekEligible Patient Appointments14Screenings5Average Number of Items Answered12.00\n\n\n\n\nRow\n\n\nOverallEligible Patient Appointments923Screenings516Average Number of Items Answered11.62\n\n\n\n\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html",
+    "href": "sections/detect_tool_dashboard.html",
+    "title": "DETECT Tool",
+    "section": "",
+    "text": "source(here::here(\"r\", \"add_shade_column_x_rows.R\")) # Adding shade to DT tables"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n\n$icon\n[1] \"ui-checks-grid\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 175\n\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 174\n\n\n\n\n$icon\n[1] \"person\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 154"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill-1",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill-1",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"clipboard2-x\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"search\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 4\n\n\n\n\n$icon\n[1] \"file-earmark\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill-2",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill-2",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"file-earmark-check\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 4\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 3"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row",
+    "href": "sections/detect_tool_dashboard.html#row",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-1",
+    "href": "sections/detect_tool_dashboard.html#row-1",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-2",
+    "href": "sections/detect_tool_dashboard.html#row-2",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn\n\nind_em_plot &lt;- function(data, count_var, perc_var){\n  gg_ind_em &lt;- ggplot(data, aes(x = eval(parse(text = count_var)), \n                                y = label, fill = value, \n                            text = paste0(\"Count: \", \n                                          eval(parse(text = count_var)), \n                                          \"\\nProportion: \",\n                                          eval(parse(text = perc_var))))) +\n    geom_bar(stat = \"identity\", show.legend=FALSE) +\n    scale_fill_manual(\"Legend\",\n                      values = c(\"Yes\" = \"#219ebc\", \n                                 \"No\" = \"#AFD5E0\",\n                                 \"Unable to assess\" = \"#023047\",\n                                 \"NA\" = \"#3C5967\"), drop = FALSE) +\n    theme_classic() + \n    theme(axis.title.x=element_blank(),\n          axis.title.y=element_blank())\n  \n  ggplotly(gg_ind_em, tooltip = c(\"text\")) %&gt;%\n    layout(\n           xaxis = list(fixedrange = TRUE),\n           yaxis = list(\n             # range = list(0,10),\n             fixedrange = TRUE)\n    )  \n}\n\nind_em_plot(ind_em_plot_data_all, \"count\", \"perc\")"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-3",
+    "href": "sections/detect_tool_dashboard.html#row-3",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-4",
+    "href": "sections/detect_tool_dashboard.html#row-4",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill-3",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill-3",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n\n$icon\n[1] \"ui-checks-grid\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 3\n\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 3\n\n\n\n\n$icon\n[1] \"person\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 3"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill-4",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill-4",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"clipboard2-x\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"search\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"file-earmark\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill-5",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill-5",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"file-earmark-check\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 2\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 3"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-5",
+    "href": "sections/detect_tool_dashboard.html#row-5",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-6",
+    "href": "sections/detect_tool_dashboard.html#row-6",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-7",
+    "href": "sections/detect_tool_dashboard.html#row-7",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn\n\nbaylor_ind_em_plot_data &lt;- ind_em_plot_data %&gt;%\n  filter(\n    calc_institution_7cat_f == \"Baylor College of Medicine - BT House Calls\")\n\nind_em_plot(baylor_ind_em_plot_data, \"inst_count\", \"inst_perc\")"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-8",
+    "href": "sections/detect_tool_dashboard.html#row-8",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-9",
+    "href": "sections/detect_tool_dashboard.html#row-9",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn\n\n\nWarning: No shared levels found between `names(values)` of the manual scale and the\ndata's fill values."
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill-6",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill-6",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n\n$icon\n[1] \"ui-checks-grid\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"person\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill-7",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill-7",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"clipboard2-x\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"search\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"file-earmark\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill-8",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill-8",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"file-earmark-check\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 3"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-10",
+    "href": "sections/detect_tool_dashboard.html#row-10",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\n\nWarning: No shared levels found between `names(values)` of the manual scale and the\ndata's fill values."
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-11",
+    "href": "sections/detect_tool_dashboard.html#row-11",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-12",
+    "href": "sections/detect_tool_dashboard.html#row-12",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn\n\njh_ind_em_plot_data &lt;- ind_em_plot_data %&gt;%\n  filter(\n    calc_institution_7cat_f == \"Johns Hopkins - JHOME\")\n\nind_em_plot(jh_ind_em_plot_data, \"inst_count\", \"inst_perc\")\n\nWarning: No shared levels found between `names(values)` of the manual scale and the\ndata's fill values.\n\n\n\n\n\n\n\n\nWarning: No shared levels found between `names(values)` of the manual scale and the\ndata's fill values."
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-13",
+    "href": "sections/detect_tool_dashboard.html#row-13",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-14",
+    "href": "sections/detect_tool_dashboard.html#row-14",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn\n\n\nWarning: No shared levels found between `names(values)` of the manual scale and the\ndata's fill values."
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill-9",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill-9",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n\n$icon\n[1] \"ui-checks-grid\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"person\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill-10",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill-10",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"clipboard2-x\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"search\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"file-earmark\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill-11",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill-11",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"file-earmark-check\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 3"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-15",
+    "href": "sections/detect_tool_dashboard.html#row-15",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\n\nWarning: No shared levels found between `names(values)` of the manual scale and the\ndata's fill values."
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-16",
+    "href": "sections/detect_tool_dashboard.html#row-16",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-17",
+    "href": "sections/detect_tool_dashboard.html#row-17",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn\n\nucsf_ind_em_plot_data &lt;- ind_em_plot_data %&gt;%\n  filter(\n    calc_institution_7cat_f == \"UCSF - Care at Home Program\")\n\nind_em_plot(ucsf_ind_em_plot_data, \"inst_count\", \"inst_perc\")\n\nWarning: No shared levels found between `names(values)` of the manual scale and the\ndata's fill values.\n\n\n\n\n\n\n\n\nWarning: No shared levels found between `names(values)` of the manual scale and the\ndata's fill values."
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-18",
+    "href": "sections/detect_tool_dashboard.html#row-18",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-19",
+    "href": "sections/detect_tool_dashboard.html#row-19",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn\n\n\nWarning: No shared levels found between `names(values)` of the manual scale and the\ndata's fill values."
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill-12",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill-12",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n\n$icon\n[1] \"ui-checks-grid\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 126\n\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 126\n\n\n\n\n$icon\n[1] \"person\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 106"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill-13",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill-13",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"clipboard2-x\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"search\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 4\n\n\n\n\n$icon\n[1] \"file-earmark\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill-14",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill-14",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"file-earmark-check\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 2\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 3"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-20",
+    "href": "sections/detect_tool_dashboard.html#row-20",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-21",
+    "href": "sections/detect_tool_dashboard.html#row-21",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-22",
+    "href": "sections/detect_tool_dashboard.html#row-22",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn\n\nuab_ind_em_plot_data &lt;- ind_em_plot_data %&gt;%\n  filter(\n    calc_institution_7cat_f == \"University of Alabama - UAB House Calls\")\n\nind_em_plot(uab_ind_em_plot_data, \"inst_count\", \"inst_perc\")"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-23",
+    "href": "sections/detect_tool_dashboard.html#row-23",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-24",
+    "href": "sections/detect_tool_dashboard.html#row-24",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill-15",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill-15",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n\n$icon\n[1] \"ui-checks-grid\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"person\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill-16",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill-16",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"clipboard2-x\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"search\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"file-earmark\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill-17",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill-17",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"file-earmark-check\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 2\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 3"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-25",
+    "href": "sections/detect_tool_dashboard.html#row-25",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\n\nWarning: No shared levels found between `names(values)` of the manual scale and the\ndata's fill values."
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-26",
+    "href": "sections/detect_tool_dashboard.html#row-26",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-27",
+    "href": "sections/detect_tool_dashboard.html#row-27",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn\n\nutsw_ind_em_plot_data &lt;- ind_em_plot_data %&gt;%\n  filter(\n    calc_institution_7cat_f == \"UT Southwestern - COVE\")\n\nind_em_plot(utsw_ind_em_plot_data, \"inst_count\", \"inst_perc\")\n\nWarning: No shared levels found between `names(values)` of the manual scale and the\ndata's fill values.\n\n\n\n\n\n\n\n\nWarning: No shared levels found between `names(values)` of the manual scale and the\ndata's fill values."
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-28",
+    "href": "sections/detect_tool_dashboard.html#row-28",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-29",
+    "href": "sections/detect_tool_dashboard.html#row-29",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn\n\n\nWarning: No shared levels found between `names(values)` of the manual scale and the\ndata's fill values."
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill-18",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill-18",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n\n$icon\n[1] \"ui-checks-grid\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 29\n\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 29\n\n\n\n\n$icon\n[1] \"person\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 29"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill-19",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill-19",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"clipboard2-x\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"search\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"file-earmark\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill-20",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill-20",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"file-earmark-check\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 2\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 3"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-30",
+    "href": "sections/detect_tool_dashboard.html#row-30",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-31",
+    "href": "sections/detect_tool_dashboard.html#row-31",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-32",
+    "href": "sections/detect_tool_dashboard.html#row-32",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn\n\nlbj_ind_em_plot_data &lt;- ind_em_plot_data %&gt;%\n  filter(\n    calc_institution_7cat_f == \"UTH Houston - LBJ House Calls\")\n\nind_em_plot(lbj_ind_em_plot_data, \"inst_count\", \"inst_perc\")"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-33",
+    "href": "sections/detect_tool_dashboard.html#row-33",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-34",
+    "href": "sections/detect_tool_dashboard.html#row-34",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn\n\n\nWarning: No shared levels found between `names(values)` of the manual scale and the\ndata's fill values."
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill-21",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill-21",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n\n$icon\n[1] \"ui-checks-grid\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 17\n\n\n\n\n\n$icon\n[1] \"check2-circle\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 16\n\n\n\n\n$icon\n[1] \"person\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 16"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill-22",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill-22",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"clipboard2-x\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"search\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"file-earmark\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-height-5-.fill-23",
+    "href": "sections/detect_tool_dashboard.html#row-height-5-.fill-23",
+    "title": "DETECT Tool",
+    "section": "Row {height= “5%” .fill}",
+    "text": "Row {height= “5%” .fill}\n\n\n$icon\n[1] \"file-earmark-check\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 0\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 2\n\n\n\n\n$icon\n[1] \"link\"\n\n$color\n[1] \"vb-green\"\n\n$value\n[1] 3"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-35",
+    "href": "sections/detect_tool_dashboard.html#row-35",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-36",
+    "href": "sections/detect_tool_dashboard.html#row-36",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-37",
+    "href": "sections/detect_tool_dashboard.html#row-37",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn\n\nutp_ind_em_plot_data &lt;- ind_em_plot_data %&gt;%\n  filter(\n    calc_institution_7cat_f == \"UTH Houston - UT Physicians House Calls\")\n\nind_em_plot(utp_ind_em_plot_data, \"inst_count\", \"inst_perc\")"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-38",
+    "href": "sections/detect_tool_dashboard.html#row-38",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn"
+  },
+  {
+    "objectID": "sections/detect_tool_dashboard.html#row-39",
+    "href": "sections/detect_tool_dashboard.html#row-39",
+    "title": "DETECT Tool",
+    "section": "Row",
+    "text": "Row\n\nColumn\n\n\nWarning: No shared levels found between `names(values)` of the manual scale and the\ndata's fill values."
+  },
+  {
+    "objectID": "sections/recruitment_and_scheduling_tracker.html",
+    "href": "sections/recruitment_and_scheduling_tracker.html",
+    "title": "Recruitment and Scheduling Tracker",
+    "section": "",
+    "text": "This dashboard displays statistics for:File Namerecruitment_mock_data_calc.rdsLast Modified2025-03-31 15:33 CDT\n\n\n\n\nThis data references:Subjects1800Recruiters4Calls3060Time Period2026-09-01 to 2027-05-13"
+  },
+  {
+    "objectID": "sections/recruitment_and_scheduling_tracker.html#column",
+    "href": "sections/recruitment_and_scheduling_tracker.html#column",
+    "title": "Recruitment and Scheduling Tracker",
+    "section": "Column",
+    "text": "Column\n\nRow\n\n\n\n\n\n\n\n\n\n\n\nRow\n\n\n$icon\n[1] \"telephone-outbound\"\n\n$color\n[1] \"vb-blue\"\n\n$value\n[1] 3060\n\n\n\n\n$icon\n[1] \"telephone-outbound\"\n\n$color\n[1] \"vb-blue\"\n\n$value\n[1] 16.7\n\n\n\n\nRow\n\n\n$icon\n[1] \"calendar-week\"\n\n$color\n[1] \"vb-blue\"\n\n$value\n[1] 448\n\n\n\n\n$icon\n[1] \"list-check\"\n\n$color\n[1] \"vb-blue\"\n\n$value\n[1] \"1 per 7 calls\"\n\n\n\n\nRow\n\n\n$icon\n[1] \"telephone-outbound\"\n\n$color\n[1] \"vb-blue\"\n\n$value\n[1] 1.7\n\n\n\n\n$icon\n[1] \"telephone-outbound\"\n\n$color\n[1] \"vb-blue\"\n\n$value\n[1] 84\n\n\n\n\nRow\n\n\n$icon\n[1] \"telephone-outbound\"\n\n$color\n[1] \"vb-blue\"\n\n$value\n[1] 72\n\n\n\n\n$icon\n[1] \"telephone-outbound\"\n\n$color\n[1] \"vb-blue\"\n\n$value\n[1] \"16.67%\""
+  },
+  {
+    "objectID": "sections/recruitment_and_scheduling_tracker.html#column-1",
+    "href": "sections/recruitment_and_scheduling_tracker.html#column-1",
+    "title": "Recruitment and Scheduling Tracker",
+    "section": "Column",
+    "text": "Column"
+  },
+  {
+    "objectID": "sections/recruitment_and_scheduling_tracker.html#column-2",
+    "href": "sections/recruitment_and_scheduling_tracker.html#column-2",
+    "title": "Recruitment and Scheduling Tracker",
+    "section": "Column",
+    "text": "Column\n\n\nDayCalls MadeF/U Interviews ScheduledPercent ScheduledMonday81313616.73%Tuesday61010316.89%Wednesday396399.85%Thursday6328713.77%Friday6098313.63%\n\n\n\n\nTime of DayCalls MadeF/U Interviews ScheduledPercent Scheduled9-9:593254814.77%10-10:593584713.13%11-11:593104715.16%12-12:593395315.63%13-13:593735113.67%14-14:593485214.94%15-15:593225015.53%16-16:593575314.85%173284714.33%"
+  },
+  {
+    "objectID": "sections/recruitment_and_scheduling_tracker.html#column-3",
+    "href": "sections/recruitment_and_scheduling_tracker.html#column-3",
+    "title": "Recruitment and Scheduling Tracker",
+    "section": "Column",
+    "text": "Column"
   }
 ]
