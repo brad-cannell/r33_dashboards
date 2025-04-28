@@ -1,5 +1,5 @@
 # R33 Phase Cluster-Randomized Controlled Trial
- 
+
 ## Objectives
 Our primary objective is to evaluate whether the use of the DETECT-RPC screening tool increases the average reporting of EM by HBPC clinicians relative to a baseline period where they did not use the DETECT-RPC screening tool. 
 

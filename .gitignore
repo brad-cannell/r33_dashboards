@@ -12,3 +12,7 @@ data/
 .xlsx
 .DS_Store
 /.quarto/
+
+.Renviron
+
+renv/
