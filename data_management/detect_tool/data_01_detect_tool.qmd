@@ -90,7 +90,7 @@ go_uth_link_api <- function(slug){
 ```
 
 ```{r}
-definitions_link_hits <- go_uth_link_api("elder_abuse_definitions")
+definitions_link_hits <- go_uth_link_api("detect-em")
 al_link_hits <- go_uth_link_api("detect-al")
 ca_link_hits <- go_uth_link_api("detect-ca")
 md_link_hits <- go_uth_link_api("detect-md")
