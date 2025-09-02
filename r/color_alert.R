@@ -2,6 +2,7 @@
   
 # set color alert code
 color_code <- function(value, total){
+
   # Good
   if((value/total)*100 >= 80){
     color = "vb-green"

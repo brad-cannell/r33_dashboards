@@ -1297,8 +1297,12 @@ list(
 #| title: Items Answered this Week 
 #| content: valuebox
 
-items_answered_week <- mean(utsw_week$perc_completed, na.rm = TRUE)
-
+# TODO: HOTFIX PATCH OUT AFTER DISCUSSING
+if (all(is.na(utsw_week$perc_completed))) {
+  items_answered_week <- 0
+} else {
+  items_answered_week <- mean(utsw_week$perc_completed, na.rm = TRUE)
+}
 
 list(
   icon = "card-checklist",
