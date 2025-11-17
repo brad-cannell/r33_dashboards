@@ -14,6 +14,8 @@ library(ggplot2)
 library(plotly)
 library(crosstalk)
 library(DT)
+library(rlang)
+library(purrr)
 ```
 
 <!-- Load data -->
@@ -2858,3 +2860,123 @@ utp_sus_type_em_table_data <- sus_type_em_table_data %>%
 em_type_sus_em_dt(utp_sus_type_em_table_data)
 ```
 
+# Textbox Analytics
+
+```{r}
+#| label: free text columns and logic map
+#| echo: false
+
+# Define target columns: specific free-text fields from the instrument
+free_text_fields <- c(
+    "ri_environment_un_reason", # ri_necessities = 99 OR ri_environment = 99
+    "ri_caregiver_oth", # ri_caregiver = 99 AND ri_caregiver_un_reason = 98
+    "ri_patient_assess", # ri_sedated = 99 OR ri_isolated = 99 OR ri_anxious = 99 OR ri_prohibited = 99 OR ri_unmet_needs = 99 OR ri_injuries = 99
+    "ri_em_no_reason", # suspect_em = 0 AND ri_necessities = 1 OR ri_environment = 1 OR ri_sedated = 1 OR ri_isolated = 1 OR ri_anxious = 1 OR ri_prohibited = 1 OR ri_unmet_needs = 1 OR ri_injuries = 1
+    "ri_em_reason", # suspect_em = 1 AND ri_necessities != 1 OR ri_environment != 1 OR ri_sedated != 1 OR ri_isolated != 1 OR ri_anxious != 1 OR ri_prohibited != 1 OR ri_unmet_needs != 1 OR ri_injuries != 1
+    "ri_em_type_other", # suspect_em = 1 AND ri_em_type = 98
+    "ri_aps_no_reason", # suspect_em = 1 AND ri_report = 0
+    "ri_refer_svcs_specify", # suspect_em = 1 AND ri_refer_svcs = 1
+    "ri_reflection_notes" # ri_reflection = 1
+)
+
+# Define the specific skip/branching logic required for each field above
+free_text_branching_logic <- c(
+    "ri_necessities_3cat == 99 | ri_environment_3cat == 99",
+    "ri_caregiver_3cat == 99 & ri_caregiver_un_reason_2cat == 98",
+    "ri_sedated_3cat == 99 | ri_isolated_3cat == 99 | ri_anxious_3cat == 99 | ri_prohibited_3cat == 99 | ri_unmet_needs_3cat == 99 | ri_injuries_3cat == 99",
+    "suspect_em_2cat == 0 & (ri_necessities_3cat == 1 | ri_environment_3cat == 1 | ri_sedated_3cat == 1 | ri_isolated_3cat == 1 | ri_anxious_3cat == 1 | ri_prohibited_3cat == 1 | ri_unmet_needs_3cat == 1 | ri_injuries_3cat == 1)",
+    "suspect_em_2cat == 1 & (ri_necessities_3cat != 1 | ri_environment_3cat != 1 | ri_sedated_3cat != 1 | ri_isolated_3cat != 1 | ri_anxious_3cat != 1 | ri_prohibited_3cat != 1 | ri_unmet_needs_3cat != 1 | ri_injuries_3cat != 1)",
+    "suspect_em_2cat == 1 & ri_em_type_98_2cat == 1",
+    "suspect_em_2cat == 1 & ri_report_2cat == 0",
+    "suspect_em_2cat == 1 & ri_refer_svcs_2cat == 1",
+    "ri_reflection_2cat == 1"
+)
+
+# Create a named vector to serve as a lookup map (Field Name -> Logic String)
+names(free_text_branching_logic) <- free_text_fields
+```
+
+```{r}
+#| label: answer rate calculation functions
+#| echo: false
+
+# Calculates raw completion rate (ignoring skip logic)
+perc_answered <- function(df, colname) {
+    # Non-null rows
+    non_null <- sum(!is.na(df[[colname]]))
+
+    # Total rows
+    total <- nrow(df)
+
+    # Answered percentage
+    perc <- round((non_null / total) * 100, digits = 3)
+
+    return(perc)
+}
+
+# Calculates completion rate relative to eligibility (accounting for skip logic)
+perc_answer_based_on_availability <- function(
+    df,
+    colname,
+    logic_map
+) {
+    # Convert the stored string logic into an evaluable R expression
+    logic <- parse_expr(logic_map[[colname]])
+
+    # Filter dataset to only rows meeting the branching criteria
+    # Uses !! (bang-bang) to unquote the expression into the filter
+    eligible_df <- df |>
+        filter(!!logic)
+
+    total <- eligible_df |>
+        nrow()
+
+    # Count populated responses within the eligible subset
+    non_null <- sum(!is.na(eligible_df[[colname]]))
+
+    # Answered percentage
+    perc <- round((non_null / total) * 100, digits = 3)
+
+    return(perc)
+}
+```
+
+```{r}
+#| label: tibbles for textbox answer percentages
+#| echo: false
+
+answers_per_record <- map_vec(free_text_fields, ~ perc_answered(data, .x))
+answers_per_eligible_record <- map_vec(free_text_fields, ~ perc_answer_based_on_availability(data, .x, free_text_branching_logic))
+
+names(answers_per_record) <- free_text_fields
+names(answers_per_eligible_record) <- free_text_fields
+
+answers_per_record <- tibble::enframe(answers_per_record, name = "Textbox Variable", value = "Answered %")
+answers_per_eligible_record <- tibble::enframe(answers_per_eligible_record, name = "Textbox Variable", value = "Answered %")
+```
+
+```{r}
+#| label: answers_percent_figure
+#| title: "Answer %"
+
+combined_answers <- left_join(answers_per_record, answers_per_eligible_record, by = "Textbox Variable", suffix = c(" per record", " per eligible record")) |>
+    tidyr::pivot_longer(cols = c("Answered % per record", "Answered % per eligible record"), names_to = "Type", values_to = "Percent")
+
+p1 <- ggplot(combined_answers, aes(x = Percent, y = `Textbox Variable`, fill = Type)) +
+    geom_col(position = "dodge") + 
+    scale_fill_manual(values = c("Answered % per record" = "#219ebc", "Answered % per eligible record" = "#023047"))
+
+ggplotly(p1)
+```
+
+```{r}
+#| label: tbl-answers_percent_tables
+#| tbl-cap: "Answer %"
+#| tbl-subcap: 
+#|   - "Answer % per record"
+#|   - "Answer % per eligible record"
+#| layout-ncol: 2
+
+datatable(answers_per_record, options = (DT.options = list(dom = 't')))
+datatable(answers_per_eligible_record, options = (DT.options = list(dom = 't')))
+```
