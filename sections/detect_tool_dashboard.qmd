@@ -2872,7 +2872,7 @@ free_text_fields <- c(
     "ri_caregiver_oth", # ri_caregiver = 99 AND ri_caregiver_un_reason = 98
     "ri_patient_assess", # ri_sedated = 99 OR ri_isolated = 99 OR ri_anxious = 99 OR ri_prohibited = 99 OR ri_unmet_needs = 99 OR ri_injuries = 99
     "ri_em_no_reason", # suspect_em = 0 AND ri_necessities = 1 OR ri_environment = 1 OR ri_sedated = 1 OR ri_isolated = 1 OR ri_anxious = 1 OR ri_prohibited = 1 OR ri_unmet_needs = 1 OR ri_injuries = 1
-    "ri_em_reason", # suspect_em = 1 AND ri_necessities != 1 OR ri_environment != 1 OR ri_sedated != 1 OR ri_isolated != 1 OR ri_anxious != 1 OR ri_prohibited != 1 OR ri_unmet_needs != 1 OR ri_injuries != 1
+    "ri_em_reason", # suspect_em = 1 AND ri_necessities != 1 AND ri_environment != 1 AND ri_sedated != 1 AND ri_isolated != 1 AND ri_anxious != 1 AND ri_prohibited != 1 AND ri_unmet_needs != 1 AND ri_injuries != 1
     "ri_em_type_other", # suspect_em = 1 AND ri_em_type = 98
     "ri_aps_no_reason", # suspect_em = 1 AND ri_report = 0
     "ri_refer_svcs_specify", # suspect_em = 1 AND ri_refer_svcs = 1
@@ -2885,7 +2885,7 @@ free_text_branching_logic <- c(
     "ri_caregiver_3cat == 99 & ri_caregiver_un_reason_2cat == 98",
     "ri_sedated_3cat == 99 | ri_isolated_3cat == 99 | ri_anxious_3cat == 99 | ri_prohibited_3cat == 99 | ri_unmet_needs_3cat == 99 | ri_injuries_3cat == 99",
     "suspect_em_2cat == 0 & (ri_necessities_3cat == 1 | ri_environment_3cat == 1 | ri_sedated_3cat == 1 | ri_isolated_3cat == 1 | ri_anxious_3cat == 1 | ri_prohibited_3cat == 1 | ri_unmet_needs_3cat == 1 | ri_injuries_3cat == 1)",
-    "suspect_em_2cat == 1 & (ri_necessities_3cat != 1 | ri_environment_3cat != 1 | ri_sedated_3cat != 1 | ri_isolated_3cat != 1 | ri_anxious_3cat != 1 | ri_prohibited_3cat != 1 | ri_unmet_needs_3cat != 1 | ri_injuries_3cat != 1)",
+    "suspect_em_2cat == 1 & (ri_necessities_3cat != 1 & ri_environment_3cat != 1 & ri_sedated_3cat != 1 & ri_isolated_3cat != 1 & ri_anxious_3cat != 1 & ri_prohibited_3cat != 1 & ri_unmet_needs_3cat != 1 & ri_injuries_3cat != 1)",
     "suspect_em_2cat == 1 & ri_em_type_98_2cat == 1",
     "suspect_em_2cat == 1 & ri_report_2cat == 0",
     "suspect_em_2cat == 1 & ri_refer_svcs_2cat == 1",
@@ -2911,7 +2911,10 @@ perc_answered <- function(df, colname) {
     # Answered percentage
     perc <- round((non_null / total) * 100, digits = 3)
 
-    return(perc)
+    # Output
+    output <- list(non_null_count = non_null, percentage = perc)
+
+    return(output)
 }
 
 # Calculates completion rate relative to eligibility (accounting for skip logic)
@@ -2937,7 +2940,10 @@ perc_answer_based_on_availability <- function(
     # Answered percentage
     perc <- round((non_null / total) * 100, digits = 3)
 
-    return(perc)
+    # Output
+    output <- list(non_null_count = non_null, percentage = perc)
+
+    return(output)
 }
 ```
 
@@ -2945,14 +2951,11 @@ perc_answer_based_on_availability <- function(
 #| label: tibbles for textbox answer percentages
 #| echo: false
 
-answers_per_record <- map_vec(free_text_fields, ~ perc_answered(data, .x))
-answers_per_eligible_record <- map_vec(free_text_fields, ~ perc_answer_based_on_availability(data, .x, free_text_branching_logic))
+answers_per_record <- map_dfr(free_text_fields, ~ perc_answered(data, .x))
+answers_per_eligible_record <- map_dfr(free_text_fields, ~ perc_answer_based_on_availability(data, .x, free_text_branching_logic))
 
-names(answers_per_record) <- free_text_fields
-names(answers_per_eligible_record) <- free_text_fields
-
-answers_per_record <- tibble::enframe(answers_per_record, name = "Textbox Variable", value = "Answered %")
-answers_per_eligible_record <- tibble::enframe(answers_per_eligible_record, name = "Textbox Variable", value = "Answered %")
+answers_per_record <- answers_per_record |> tibble::add_column(free_text_fields, .before = 1) |> setNames(c("Textbox Variable", "Answered N", "Answered %"))
+answers_per_eligible_record <- answers_per_eligible_record |> tibble::add_column(free_text_fields, .before = 1) |> setNames(c("Textbox Variable", "Answered N", "Answered %"))
 ```
 
 ```{r}
