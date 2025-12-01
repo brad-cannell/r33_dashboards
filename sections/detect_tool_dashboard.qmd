@@ -2952,22 +2952,60 @@ perc_answer_based_on_availability <- function(
 #| echo: false
 
 answers_per_record <- map_dfr(free_text_fields, ~ perc_answered(data, .x))
-answers_per_eligible_record <- map_dfr(free_text_fields, ~ perc_answer_based_on_availability(data, .x, free_text_branching_logic))
+answers_per_eligible_record <- map_dfr(
+    free_text_fields,
+    ~ perc_answer_based_on_availability(data, .x, free_text_branching_logic)
+)
 
-answers_per_record <- answers_per_record |> tibble::add_column(free_text_fields, .before = 1) |> setNames(c("Textbox Variable", "Answered N", "Answered %"))
-answers_per_eligible_record <- answers_per_eligible_record |> tibble::add_column(free_text_fields, .before = 1) |> setNames(c("Textbox Variable", "Answered N", "Answered %"))
+answers_per_record <- answers_per_record |>
+    tibble::add_column(free_text_fields, .before = 1) |>
+    setNames(c("Textbox Variable", "Answered N", "Answered %"))
+answers_per_eligible_record <- answers_per_eligible_record |>
+    tibble::add_column(free_text_fields, .before = 1) |>
+    setNames(c("Textbox Variable", "Answered N", "Answered %"))
 ```
 
 ```{r}
 #| label: answers_percent_figure
 #| title: "Answer %"
 
-combined_answers <- left_join(answers_per_record, answers_per_eligible_record, by = "Textbox Variable", suffix = c(" per record", " per eligible record")) |>
-    tidyr::pivot_longer(cols = c("Answered % per record", "Answered % per eligible record"), names_to = "Type", values_to = "Percent")
+combined_answers <- left_join(
+    answers_per_record,
+    answers_per_eligible_record,
+    by = "Textbox Variable",
+    suffix = c(" per record", " per eligible record")
+) |>
+    tidyr::pivot_longer(
+        cols = c("Answered % per record", "Answered % per eligible record"),
+        names_to = "Type",
+        values_to = "Percent"
+    ) |>
+    mutate(
+        `Textbox Variable` = case_match(
+            `Textbox Variable`,
+            "ri_environment_un_reason" ~ "Inability to assess environment",
+            "ri_caregiver_oth" ~ "Inability to assess caregiver",
+            "ri_patient_assess" ~ "inability to assess patient",
+            "ri_em_no_reason" ~ "No EM suspected despite indicators",
+            "ri_em_reason" ~ "EM suspected reason",
+            "ri_em_type_other" ~ "Specify mistreatment type",
+            "ri_aps_no_reason" ~ "No APS report reason",
+            "ri_refer_svcs_specify" ~ "List services other than APS",
+            "ri_reflection_notes" ~ "General brief note"
+        )
+    )
 
-p1 <- ggplot(combined_answers, aes(x = Percent, y = `Textbox Variable`, fill = Type)) +
-    geom_col(position = "dodge") + 
-    scale_fill_manual(values = c("Answered % per record" = "#219ebc", "Answered % per eligible record" = "#023047"))
+p1 <- ggplot(
+    combined_answers,
+    aes(x = Percent, y = `Textbox Variable`, fill = Type)
+) +
+    geom_col(position = "dodge") +
+    scale_fill_manual(
+        values = c(
+            "Answered % per record" = "#219ebc",
+            "Answered % per eligible record" = "#023047"
+        )
+    )
 
 ggplotly(p1)
 ```
@@ -2975,10 +3013,42 @@ ggplotly(p1)
 ```{r}
 #| label: tbl-answers_percent_tables
 #| tbl-cap: "Answer %"
-#| tbl-subcap: 
+#| tbl-subcap:
 #|   - "Answer % per record"
 #|   - "Answer % per eligible record"
 #| layout-ncol: 2
+answers_per_record <- answers_per_record |>
+    mutate(
+        `Textbox Variable` = case_match(
+            `Textbox Variable`,
+            "ri_environment_un_reason" ~ "Inability to assess environment",
+            "ri_caregiver_oth" ~ "Inability to assess caregiver",
+            "ri_patient_assess" ~ "inability to assess patient",
+            "ri_em_no_reason" ~ "No EM suspected despite indicators",
+            "ri_em_reason" ~ "EM suspected reason",
+            "ri_em_type_other" ~ "Specify mistreatment type",
+            "ri_aps_no_reason" ~ "No APS report reason",
+            "ri_refer_svcs_specify" ~ "List services other than APS",
+            "ri_reflection_notes" ~ "General brief note"
+        )
+    )
+
+answers_per_eligible_record <- answers_per_eligible_record |>
+    mutate(
+        `Textbox Variable` = case_match(
+            `Textbox Variable`,
+            "ri_environment_un_reason" ~ "Inability to assess environment",
+            "ri_caregiver_oth" ~ "Inability to assess caregiver",
+            "ri_patient_assess" ~ "inability to assess patient",
+            "ri_em_no_reason" ~ "No EM suspected despite indicators",
+            "ri_em_reason" ~ "EM suspected reason",
+            "ri_em_type_other" ~ "Specify mistreatment type",
+            "ri_aps_no_reason" ~ "No APS report reason",
+            "ri_refer_svcs_specify" ~ "List services other than APS",
+            "ri_reflection_notes" ~ "General brief note"
+        )
+    )
+
 datatable(answers_per_record, options = (DT.options = list(dom = 't')))
 datatable(answers_per_eligible_record, options = (DT.options = list(dom = 't')))
 ```
