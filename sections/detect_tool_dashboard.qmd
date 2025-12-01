@@ -2979,7 +2979,6 @@ ggplotly(p1)
 #|   - "Answer % per record"
 #|   - "Answer % per eligible record"
 #| layout-ncol: 2
-
 datatable(answers_per_record, options = (DT.options = list(dom = 't')))
 datatable(answers_per_eligible_record, options = (DT.options = list(dom = 't')))
 ```
