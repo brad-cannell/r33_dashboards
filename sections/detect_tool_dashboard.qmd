@@ -2985,7 +2985,7 @@ combined_answers <- left_join(
             `Textbox Variable`,
             "ri_environment_un_reason" ~ "Inability to assess environment",
             "ri_caregiver_oth" ~ "Inability to assess caregiver",
-            "ri_patient_assess" ~ "inability to assess patient",
+            "ri_patient_assess" ~ "Inability to assess patient",
             "ri_em_no_reason" ~ "No EM suspected despite indicators",
             "ri_em_reason" ~ "EM suspected reason",
             "ri_em_type_other" ~ "Specify mistreatment type",
