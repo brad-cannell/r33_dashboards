@@ -38,8 +38,7 @@ keyring::key_set("aps_reports_redcap_api"). A password box will pop-up and your 
 
 ```{r}
 # Define REDCap API URL API token
-# api_token <-  keyring::key_get("aps_reports_redcap_api")
-api_token <- Sys.getenv("DETECT_APS_REDCAP_API_TOKEN") # Get saved REDCap API token
+api_token <-  keyring::key_get("aps_reports_redcap_api")
 redcap_url <- "https://redcap.uth.tmc.edu/api/"
 
 # Establish connection to the REDCap project

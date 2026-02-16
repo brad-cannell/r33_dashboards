@@ -20,3 +20,28 @@ In this part of the study (year 3-5), we will randomize approximately 43 home-ba
 In this part, we will recruit a purposive sample of 180 caregiving dyads consisting of family caregivers and their care recipients, half of which will be living with Alzheimer’s Disease or Related Dementias (ADRD). The study is recruiting dyads because we are interested in caregiver behaviors and their relationship to care recipient outcomes. The caregiving dyads will be recruited from among patients who are actively enrolled in one of our site-specific home-based primary care programs.
 
 This repository contains the code used to create dashboards for tracking the progress of the study.
+
+# Dashboard Updates
+
+> [!NOTE]
+> This section assumes that you have already completed all setup steps. If you haven't, please review **Quick Setup** or refer to the [wiki](https://github.com/brad-cannell/r33_dashboards/wiki).
+
+1. Open the repository locally.
+2. Submit `quarto publish gh-pages && git add . && git commit -m "update site" && git push`
+
+Create instructions for:
+- Keyring
+    - Create
+    - Set
+    - Get
+- renv
+    - Set locally
+    - Use locally
+
+API Keys needed:
+- DETECT-RPC Tool Data
+    - REDCap: https://redcap.uth.tmc.edu/index.php
+    - Project: DETECT-RPC APS Reporting
+- DETECT-RPC Clicks
+    - Go UTHealth: https://apps.uth.edu/go/pages/welcome.xhtml
+    - Title: Elder Abuse Definitions: 

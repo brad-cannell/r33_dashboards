@@ -40,8 +40,7 @@ keyring::key_set("detect_tool_redcap_api"). A password box will pop-up and your 
 
 ```{r}
 # Define REDCap API URL and API token
-# api_token <-  keyring::key_get("detect_tool_redcap_api") 
-api_token <- Sys.getenv("DETECT_TOOL_REDCAP_API_TOKEN") # Get saved REDCap API token
+api_token <-  keyring::key_get("detect_tool_redcap_api") 
 redcap_url <- "https://redcap.uth.tmc.edu/api/"
 
 # Establish connection to the REDCap project
@@ -55,11 +54,8 @@ tool_raw  <- exportRecordsTyped(rcon, forms = "reporting_instrument",
 An API token can be requested on GO UTHealth. To request a token, you can follow the instructions on the repository Wiki <https://github.com/brad-cannell/r33_dashboards/wiki/DETECT%E2%80%90RPC-Data#go-ut-health> This API token along with the client application name can be saved on your system using the keyring `key_set` function with the service argument = "detect_tool_go_uth_api". The code below can then be run.
 
 ```{r}
-# go_uth_app_name <- keyring::key_list("detect_tool_go_uth_api")[1,2]
-# go_uth_api_token <-  keyring::key_get("detect_tool_go_uth_api", go_uth_app_name) # Get saved API token
-
-go_uth_app_name <- "DetectToolLinks"
-go_uth_api_token <- Sys.getenv("DETECT_TOOL_LINKS_TOKEN")
+go_uth_app_name <- "ElderAbuseDefinitions"
+go_uth_api_token <- keyring::key_get("detect_tool_go_uth_api")
 
 ## Function to get link data
 go_uth_link_api <- function(slug){
