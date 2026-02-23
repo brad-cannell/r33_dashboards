@@ -30,6 +30,8 @@ This repository contains the code used to create dashboards for tracking the pro
 2. Submit `quarto publish gh-pages && git add . && git commit -m "update site" && git push`
 
 Create instructions for:
+- Storing locally
+    - Don't use Box/Dropbox/Google Drive
 - Keyring
     - Create
     - Set
