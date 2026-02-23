@@ -37,6 +37,7 @@ Create instructions for:
 - renv
     - Set locally
     - Use locally
+    - See the "Collaboration" section of https://rstudio.github.io/renv/articles/renv.html
 
 API Keys needed:
 - DETECT-RPC Tool Data
