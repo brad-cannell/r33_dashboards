@@ -94,6 +94,10 @@ cd r33_dashboards
 > [!NOTE]
 > Don't clone to a cloud storage folder (Box, Dropbox, Google Drive, OneDrive, etc.)
 
+### Step 2: Save the Data Locally
+
+[Instructions for saving the required data locally](https://github.com/brad-cannell/r33_dashboards/wiki/DETECT%E2%80%90RPC-Data)
+
 ### Step 2: Open in the IDE
 
 * Open r33_dashboards in the IDE.
@@ -161,7 +165,8 @@ quarto publish gh-pages
 
 ```shell
 git add .
-git commit -m "YYYY-MM-DD Dashboard Update"
+git commit -m "2026-03-03 Dashboard Update"
+git push
 ```
 
 ---
