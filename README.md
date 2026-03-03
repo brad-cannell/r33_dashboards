@@ -4,9 +4,9 @@ Welcome to the DETECT-RPC R33 Phase Dashboard project! This documentation guides
 
 ---
 
-#/3# Table of Contents
+## Table of Contents
 
-1. [Overview of the Study](#overview-of-0the-study)
+1. [Overview of the Study](#overview-of-the-study)
 2. [Prerequisites](#prerequisites)
 3. [Installation](#installation)
 4. [Project Setup](#project-setup)
@@ -46,7 +46,7 @@ This repository contains the code used to create dashboards for tracking the pro
 ### Software Requirements:
 
 * [R](https://cran.r-project.org/) (version 4.5)
-* [RStudio](https://posit.co/download/rstudio-desktop/) (latest version)
+* [Positron](https://positron.posit.co/) **OR** [RStudio](https://posit.co/download/rstudio-desktop/) IDE (latest version)
 * [Quarto](https://quarto.org/docs/get-started/) (version 1.7.\*)
 * [Git](https://git-scm.com/downloads) (latest version)
 
@@ -92,17 +92,17 @@ cd r33_dashboards
 ```
 
 > [!NOTE]
-> Don't clone to a cloud storage folder (Box, Dropbox, Google Drive, OneDrive, etc.)
+> Don't clone to a cloud storage folder (Box, Dropbox, Google Drive, OneDrive, etc.). File-locking and sync conflicts can corrupt the renv library.
 
 ### Step 2: Save the Data Locally
 
 [Instructions for saving the required data locally](https://github.com/brad-cannell/r33_dashboards/wiki/DETECT%E2%80%90RPC-Data)
 
-### Step 2: Open in the IDE
+### Step 3: Open in the IDE
 
 * Open r33_dashboards in the IDE.
 
-### Step 3: Install Project Dependencies
+### Step 4: Install Project Dependencies
 
 In the R console:
 
@@ -113,7 +113,10 @@ renv::restore()
 
 This project uses [renv](https://rstudio.github.io/renv/articles/renv.html) to manage project package dependencies. Click the link for more details.
 
-### Step 4: Request API Keys
+> [!NOTE]
+> `renv::restore()` may take several minutes and requires an active internet connection.
+
+### Step 5: Request API Keys
 
 [Instructions for requesting API keys](https://github.com/brad-cannell/r33_dashboards/wiki/DETECT%E2%80%90RPC-Data#accessing-data-through-api)
 
@@ -128,7 +131,7 @@ API Keys needed:
     - Go UTHealth: https://apps.uth.edu/go/pages/welcome.xhtml
     - Title: Elder Abuse Definitions
 
-### Step 4: Add API Keys to Keyring
+### Step 6: Add API Keys to Keyring
 
 ```r
 keyring::key_set("DETECT_TOOL_REDCAP_API_TOKEN")
@@ -142,9 +145,7 @@ keyring::key_set("DETECT_TOOL_LINKS_TOKEN")
 
 ## Building the Dashboard
 
-> [!NOTE]
-> This section assumes that you have already completed all setup steps. If you haven't, please review **Quick Setup** or refer to the [wiki](https://github.com/brad-cannell/r33_dashboards/wiki).
-
+This section assumes you have already successfully completed all of the installation and project setup steps above.
 
 ### Step 1: Render the Dashboard
 
@@ -159,13 +160,13 @@ quarto publish gh-pages
 
 ### Step 2: View in Browser
 
-* Open the generated HTML file in your browser. It is the file named `index.html` at the project root.
+* A rendered preview of the dashboard should automatically open in the browser.
 
 ### Step 3. Commit and Push to GitHub
 
 ```shell
 git add .
-git commit -m "2026-03-03 Dashboard Update"
+git commit -m "YYYY-MM-DD Dashboard Update"
 git push
 ```
 
