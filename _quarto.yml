@@ -1,5 +1,8 @@
 project:
   type: website
+  # Select the files to render when we run quarto render or quarto publish
+  render: 
+    - sections/detect_tool_dashboard.qmd
 
 website:
   title: "DETECT R33 Dashboards"
@@ -14,7 +17,7 @@ website:
           #- sections/recruitment_and_scheduling_tracker.qmd
           #- sections/clinician_screening_completion_tracker.qmd
           - sections/detect_tool_dashboard.qmd
-          - sections/detect_tool_pilot_dashboard.qmd
+          # - sections/detect_tool_pilot_dashboard.qmd
           - text: Detect APS BL Dashboard
             href: https://brad-cannell.github.io/DETECT-RPC-APS-BL-Dashboard/
 
