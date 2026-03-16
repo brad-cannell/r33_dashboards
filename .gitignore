@@ -1,18 +1,82 @@
-.Rproj.user
+# =============================================================================
+# MacOS files
+# =============================================================================
+
+# DS_store
+**/.DS_Store
+
+# =============================================================================
+# R Files
+# =============================================================================
+
+# History files
 .Rhistory
+.Rapp.history
+
+# Session Data files
 .RData
+
+# User-specific files
 .Ruserdata
 
-.Rproj.user
-.Rhistory
-.RData
-.Ruserdata
-data/
-.rds
-.xlsx
-.DS_Store
-/.quarto/
+# Example code in package build process
+*-Ex.R
 
-.Renviron
+# Output files from R CMD build
+/*.tar.gz
 
-renv/
+# Output files from R CMD check
+/*.Rcheck/
+
+# RStudio files
+.Rproj.user/
+
+# produced vignettes
+vignettes/*.html
+vignettes/*.pdf
+
+# OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
+.httr-oauth
+
+# knitr and R markdown default cache directories
+*_cache/
+/cache
+
+# =============================================================================
+# Python files
+# =============================================================================
+
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# =============================================================================
+# Microsoft files
+# =============================================================================
+
+# Ignore all PowerPoint files (modern and old formats)
+*.pptx
+*.ppt
+
+# Ignore MS Office temporary files that start with ~$
+~$*
+
+# =============================================================================
+# Media files
+# =============================================================================
+
+# None
+
+# =============================================================================
+# Other large files
+# =============================================================================
+
+# Ignore all zip files
+**.zip
