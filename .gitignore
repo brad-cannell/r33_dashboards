@@ -81,3 +81,5 @@ wheels/
 # Ignore all zip files
 **.zip
 /.quarto/
+
+**/*.quarto_ipynb
