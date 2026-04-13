@@ -1,7 +1,8 @@
 project:
   type: website
   # Select the files to render when we run quarto render or quarto publish
-  render: 
+  render:
+    - index.qmd
     - sections/detect_tool_dashboard.qmd
 
 website:
