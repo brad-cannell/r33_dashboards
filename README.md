@@ -13,6 +13,7 @@ Welcome to the DETECT-RPC R33 Phase Dashboard project! This documentation guides
 5. [Building the Dashboard](#building-the-dashboard)
 6. [Development Workflow](#development-workflow)
 7. [Contributing](#contributing)
+8. [Repository Structure](#repository-structure)
 
 ---
 
@@ -134,9 +135,9 @@ API Keys needed:
 ### Step 6: Add API Keys to Keyring
 
 ```r
-keyring::key_set("DETECT_TOOL_REDCAP_API_TOKEN")
-keyring::key_set("DETECT_APS_REDCAP_API_TOKEN")
-keyring::key_set("DETECT_TOOL_LINKS_TOKEN")
+keyring::key_set("detect_tool_redcap_api")
+keyring::key_set("aps_reports_redcap_api")
+keyring::key_set("detect_tool_go_uth_api")
 ```
 
 [Click for additional information about the keyring package](https://keyring.r-lib.org/)
@@ -207,5 +208,22 @@ git push origin feature/your-feature-name
 2. Create your feature branch.
 3. Submit a Pull Request (PR) to the main repository.
 4. Clearly document your changes in the PR description.
+
+---
+
+## Repository Structure
+
+| Path | What it holds |
+|---|---|
+| `index.qmd` | Dashboard landing screen (R33 aims and objectives) |
+| `sections/` | Quarto documents to produce the dashboards |
+| `data_management/` | Prepped and cleaned data for dashboard use |
+| `data/` | Placeholder for data files — **data is not tracked in git** |
+| `r/` | Active helper functions for dashboard production and data prep |
+| `_archive/` | Retired files not being used or rendered (begins with '_' so quarto excluded from render |
+| `assets/` | Dashboard styling items |
+| `graphics/` | Logos used by the dashboard |
+| `_quarto.yml` | Quarto project config: render list, navbar, theme |
+| `renv.lock` / `renv/` | Package dependency lockfile and library (managed by `renv`) |
 
 ---

@@ -18,48 +18,56 @@ get_values <- function(df, vars){
 }
 
 # A function to get a list of dataframe variables with the same unique
-# values as a provided character vector. The arguments are a dataframe and a 
+# values as a provided character vector. The arguments are a dataframe and a
 # character vector containing the desired values.
-get_vars_with_values <- function(df, values){
-  vars <- names(df)
-  vars_list <- c()
-  for (var in vars){
-    tab_list <- as.list(table(df[[var]]))
-    var_values <- sort(attributes(tab_list)[["names"]])
-    if(setequal(var_values, sort(values)) == TRUE){
-      vars_list <- append(vars_list, var)
-    }
-  }
-  vars_list
-}
+#
+# NOTE: NOT CURRENTLY USED. This function is not called anywhere in the project
+# (verified 2026-06-29). Commented out rather than deleted so it can be
+# reimplemented later if needed. To restore, uncomment the block below.
+## get_vars_with_values <- function(df, values){
+##   vars <- names(df)
+##   vars_list <- c()
+##   for (var in vars){
+##     tab_list <- as.list(table(df[[var]]))
+##     var_values <- sort(attributes(tab_list)[["names"]])
+##     if(setequal(var_values, sort(values)) == TRUE){
+##       vars_list <- append(vars_list, var)
+##     }
+##   }
+##   vars_list
+## }
 
 # A function to create a dataframe of column names, their data class, range of
 # values (numeric variables) and number of levels (factor variables)
-col_characteristics <- function(df){
-  cols <- names(df)
-  desc_list <- c()
-  for(col in cols){
-    type <- class(df[[col]])
-    if(length(type) == 1){
-      if(type == "numeric"){
-        range_of <-  paste(min(df[[col]], na.rm = TRUE), "-", 
-                           max(df[[col]], na.rm = TRUE))
-        descr <- paste(type, "with", "range:", range_of)
-      }else if(type == "factor"){
-        n_levels <- nlevels(df[[col]])
-        descr <- paste(type, "with",  n_levels, "levels")
-      }else if(type == "character"){
-        descr <- paste(type)
-      }else{
-        descr <- paste(type)
-      }
-    }else{
-      descr <- paste(type, collapse = ", ")
-    }
-    desc_list <- append(desc_list, descr)
-  }
-  data.frame(col_names = cols, descriptions = desc_list)
-}
+#
+# NOTE: NOT CURRENTLY USED. This function is not called anywhere in the project
+# (verified 2026-06-29). Commented out rather than deleted so it can be
+# reimplemented later if needed. To restore, uncomment the block below.
+## col_characteristics <- function(df){
+##   cols <- names(df)
+##   desc_list <- c()
+##   for(col in cols){
+##     type <- class(df[[col]])
+##     if(length(type) == 1){
+##       if(type == "numeric"){
+##         range_of <-  paste(min(df[[col]], na.rm = TRUE), "-",
+##                            max(df[[col]], na.rm = TRUE))
+##         descr <- paste(type, "with", "range:", range_of)
+##       }else if(type == "factor"){
+##         n_levels <- nlevels(df[[col]])
+##         descr <- paste(type, "with",  n_levels, "levels")
+##       }else if(type == "character"){
+##         descr <- paste(type)
+##       }else{
+##         descr <- paste(type)
+##       }
+##     }else{
+##       descr <- paste(type, collapse = ", ")
+##     }
+##     desc_list <- append(desc_list, descr)
+##   }
+##   data.frame(col_names = cols, descriptions = desc_list)
+## }
 
 # Function that drops the original variable if it is the same as the created 
 #variable with a "cat" suffix.

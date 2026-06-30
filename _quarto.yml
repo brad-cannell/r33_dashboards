@@ -18,6 +18,7 @@ website:
           #- sections/recruitment_and_scheduling_tracker.qmd
           #- sections/clinician_screening_completion_tracker.qmd
           - sections/detect_tool_dashboard.qmd
+          # NOT IN USE - archived to _archive/sections/detect_tool_pilot_dashboard.qmd
           # - sections/detect_tool_pilot_dashboard.qmd
           - text: Detect APS BL Dashboard
             href: https://brad-cannell.github.io/DETECT-RPC-APS-BL-Dashboard/

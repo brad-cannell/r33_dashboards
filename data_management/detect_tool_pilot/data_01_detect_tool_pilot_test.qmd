@@ -24,9 +24,9 @@ library(lubridate)
 # Load custom functions
 
 ```{r}
-source(here::here("R", "recoding_factoring_relocating.R"))
-source(here::here("R", "nums_to_na.R"))
-source(here::here("R", "data_cleaning_tools.R"))
+source(here::here("r", "recoding_factoring_relocating.R"))
+source(here::here("r", "nums_to_na.R"))
+source(here::here("r", "data_cleaning_tools.R"))
 ```
 
 
