@@ -72,6 +72,32 @@ merge_custom <- function(ft, x, columns) {
     }
     ft
 }
+
+# DT table for free-text ("textbox") variables. Defined here so the
+# per-institution pages below can reuse it. The "All" page no longer displays a
+# textbox table, but the institution pages still do.
+text_box_dt <- function(data) {
+    DT::datatable(
+        data,
+        options = list(
+            autoWidth = TRUE,
+            columnDefs = list(
+                list(visible = FALSE, targets = c("calc_institution_7cat_f"))
+            )
+        ),
+        colnames = c(
+            "Record ID",
+            "Date",
+            "Institution",
+            "Variable Label",
+            "Text Box Content"
+        ),
+        filter = list(
+            position = 'top',
+            clear = FALSE
+        )
+    )
+}
 ```
 
 
@@ -111,7 +137,7 @@ side_bar_df %>%
 
 ```{r, echo=FALSE}
 patients <- data %>% select(ri_patient_mrn) %>% unique() %>% nrow()
-clinicians <- data %>% select(ri_clinician_id_name) %>% unique() %>% nrow()
+clinicians <- data %>% filter(!is.na(ri_clinician_id_name)) %>% distinct(ri_clinician_id_name) %>% nrow()
 survey_responses <- data %>% nrow()
 time_period <- paste(
     min(as.Date(data$ri_timestamp_start), na.rm = TRUE),
@@ -431,37 +457,6 @@ missing_data_plot <- function(data) {
 
 missing_data_plot(missing_plot_data)
 ```
-
-## Row
-
-```{r, echo = FALSE}
-#| title: Textbox Data
-text_box_dt <- function(data) {
-    DT::datatable(
-        data,
-        options = list(
-            autoWidth = TRUE,
-            columnDefs = list(
-                list(visible = FALSE, targets = c("calc_institution_7cat_f"))
-            )
-        ),
-        colnames = c(
-            "Record ID",
-            "Date",
-            "Institution",
-            "Variable Label",
-            "Text Box Content"
-        ),
-        filter = list(
-            position = 'top',
-            clear = FALSE
-        )
-    )
-}
-
-text_box_dt(text_box_table_data)
-```
-
 
 ## Row
 
@@ -955,18 +950,6 @@ missing_data_plot(baylor_missing_plot_data)
 
 ## Row
 
-```{r, echo = FALSE}
-#| title: Textbox Data
-baylor_text_box_table_data <- text_box_table_data %>%
-    filter(
-        calc_institution_7cat_f == "Baylor College of Medicine - BT House Calls"
-    )
-
-text_box_dt(baylor_text_box_table_data)
-```
-
-## Row
-
 ### Column {.tabset}
 
 ```{r}
@@ -1255,18 +1238,6 @@ list(
 ```{r, echo = FALSE}
 #| title: Missingness Summary
 missing_data_plot(jh_missing_plot_data)
-```
-
-## Row
-
-```{r, echo = FALSE}
-#| title: Textbox Data
-jh_text_box_table_data <- text_box_table_data %>%
-    filter(
-        calc_institution_7cat_f == "Johns Hopkins - JHOME"
-    )
-
-text_box_dt(jh_text_box_table_data)
 ```
 
 ## Row
@@ -1560,18 +1531,6 @@ missing_data_plot(ucsf_missing_plot_data)
 
 ## Row
 
-```{r, echo = FALSE}
-#| title: Textbox Data
-ucsf_text_box_table_data <- text_box_table_data %>%
-    filter(
-        calc_institution_7cat_f == "UCSF - Care at Home Program"
-    )
-
-text_box_dt(ucsf_text_box_table_data)
-```
-
-## Row
-
 ### Column {.tabset}
 
 ```{r}
@@ -1856,18 +1815,6 @@ list(
 ```{r, echo = FALSE}
 #| title: Missingness Summary
 missing_data_plot(uab_missing_plot_data)
-```
-
-## Row
-
-```{r, echo = FALSE}
-#| title: Textbox Data
-uab_text_box_table_data <- text_box_table_data %>%
-    filter(
-        calc_institution_7cat_f == "University of Alabama - UAB House Calls"
-    )
-
-text_box_dt(uab_text_box_table_data)
 ```
 
 ## Row
@@ -2160,18 +2107,6 @@ missing_data_plot(utsw_missing_plot_data)
 
 ## Row
 
-```{r, echo = FALSE}
-#| title: Textbox Data
-utsw_text_box_table_data <- text_box_table_data %>%
-    filter(
-        calc_institution_7cat_f == "UT Southwestern - COVE"
-    )
-
-text_box_dt(utsw_text_box_table_data)
-```
-
-## Row
-
 ### Column {.tabset}
 
 ```{r}
@@ -2460,18 +2395,6 @@ missing_data_plot(lbj_missing_plot_data)
 
 ## Row
 
-```{r, echo = FALSE}
-#| title: Textbox Data
-lbj_text_box_table_data <- text_box_table_data %>%
-    filter(
-        calc_institution_7cat_f == "UTH Houston - LBJ House Calls"
-    )
-
-text_box_dt(lbj_text_box_table_data)
-```
-
-## Row
-
 ### Column {.tabset}
 
 ```{r}
@@ -2756,18 +2679,6 @@ list(
 ```{r, echo = FALSE}
 #| title: Missingness Summary
 missing_data_plot(utp_missing_plot_data)
-```
-
-## Row
-
-```{r, echo = FALSE}
-#| title: Textbox Data
-utp_text_box_table_data <- text_box_table_data %>%
-    filter(
-        calc_institution_7cat_f == "UTH Houston - UT Physicians House Calls"
-    )
-
-text_box_dt(utp_text_box_table_data)
 ```
 
 ## Row
